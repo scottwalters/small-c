@@ -141,6 +141,7 @@ gdata ()
 /*
  *  Output the variable symbol at scptr as an extrn or a public
  */
+void
 ppubext(scptr) char *scptr; {
 	if (cptr[STORAGE] == STATIC) return;
 	ot (scptr[STORAGE] == EXTERN ? "extrn\t" : "public\t");
@@ -152,6 +153,7 @@ ppubext(scptr) char *scptr; {
 /*
  * Output the function symbol at scptr as an extrn or a public
  */
+void
 fpubext(scptr) char *scptr; {
 	if (scptr[STORAGE] == STATIC) return;
 	ot (scptr[OFFSET] == FUNCTION ? "public\t" : "extrn\t");

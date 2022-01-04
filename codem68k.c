@@ -20,6 +20,11 @@
 
 int	needr0;
 int	needh;
+
+
+void ppubext(char*);
+
+
 /*
  *	Some predefinitions:
  *
@@ -177,6 +182,7 @@ gdata ()
 /*
  *  Output the variable symbol at scptr as an extrn or a public
  */
+void
 ppubext(scptr) char *scptr; {
 	if (scptr[STORAGE] == STATIC) return;
 	ot ("global\t");
