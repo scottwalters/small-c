@@ -7,6 +7,8 @@
 #include "defs.h"
 #include "data.h"
 
+void getarg (int t);
+
 /*
  *	begin a function
  *
@@ -16,10 +18,13 @@
  *
  */
 int argtop;
+void
 newfunc ()
 {
 	char	n[NAMESIZE], *ptr;
 	fexitlab = getlabel();
+
+	fprintf(stderr, "debug: newfunc %s\n", n);
 
 	if (!symname (n) ) {
 		error ("illegal function or declaration");
@@ -27,6 +32,7 @@ newfunc ()
 		return;
 	}
 	if (ptr = findglb (n)) {
+                // if(! ptr) fprintf(stderr, "debug: findglb failed"); else fprintf(stderr, "debug: findglb=%ud\n", ptr);
 		if (ptr[IDENT] != FUNCTION)
 			multidef (n);
 		else if (ptr[OFFSET] == FUNCTION)
@@ -46,11 +52,13 @@ newfunc ()
 	argstk = 0;
 	while (!match (")")) {
 		if (symname (n)) {
-			if (findloc (n))
+			if (findloc (n)) {
+                                fprintf(stderr, "debug: newfunc: multidef %s\n", n);
 				multidef (n);
-			else {
+			} else {
 				addloc (n, 0, 0, argstk, AUTO);
 				argstk = argstk + intsize();
+                                fprintf(stderr, "debug: newfunc: added %s, new argstk=%lx\n", n, argstk);
 			}
 		} else {
 			error ("illegal argument name");
@@ -69,11 +77,11 @@ newfunc ()
 	while (argstk) {
 		if (amatch ("register", 8)) {
 			if (amatch("char", 4)) 
-				getarg(CCHAR);
+				getarg((int)CCHAR);
 			else if (amatch ("int", 3))
-				getarg(CINT);
+				getarg((int)CINT);
 			else
-				getarg(CINT);
+				getarg((int)CINT);
 			ns();
 		} else if (amatch ("char", 4)) {
 			getarg (CCHAR);
@@ -104,8 +112,8 @@ newfunc ()
  *	completely rewritten version.  p.l. woods
  *
  */
-getarg (t)
-int	t;
+void
+getarg (int t)
 {
 	int	j, legalname, address;
 	char	n[NAMESIZE], c, *argptr;

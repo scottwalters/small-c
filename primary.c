@@ -8,7 +8,7 @@
 #include "data.h"
 
 primary (lval)
-int	*lval;
+long int	*lval;
 {
 	char	*ptr, sname[NAMESIZE];
 	int	num[1];
@@ -104,8 +104,10 @@ int	*lval;
  *	true if val1 -> int pointer or int array and val2 not pointer or array
  */
 dbltest (val1, val2)
-int	val1[], val2[];
+long int	val1[], val2[];
 {
+	return(FALSE);  // no byte pointers on nisan, only word pointers, so we never need to scale pointers to point at words
+/*
 	if (val1 == NULL)
 		return (FALSE);
 	if (val1[2] != CINT)
@@ -113,13 +115,14 @@ int	val1[], val2[];
 	if (val2[2])
 		return (FALSE);
 	return (TRUE);
+ */
 }
 
 /*
  *	determine type of binary operation
  */
 result (lval, lval2)
-int	lval[],
+long int	lval[],
 	lval2[];
 {
 	if (lval[2] && lval2[2])
@@ -132,7 +135,7 @@ int	lval[],
 }
 		
 constant (val)
-int	val[];
+long int	val[];
 {
 	if (number (val))
 		immed ();
@@ -150,7 +153,7 @@ int	val[];
 }
 
 number (val)
-int	val[];
+long int	val[];
 {
 	int	k, minus, base;
 	char	c;
@@ -189,7 +192,7 @@ int	val[];
 }
 
 pstr (val)
-int	val[];
+long int	val[];
 {
 	int	k;
 	char	c;
@@ -206,7 +209,7 @@ int	val[];
 }
 
 qstr (val)
-int	val[];
+long int	val[];
 {
 	char	c;
 
@@ -244,7 +247,7 @@ spechar() {
 	else if (c == 'f') c = FFEED;
 	else if (c == 'b') c = BKSP;
 	else if (c == '0') c = EOS;
-	else if (c == EOS) return;
+	else if (c == EOS) return 0; // XXX probably should be error
 
 	gch();
 	return (c);

@@ -1,5 +1,15 @@
 /*	File defs.h: 2.1 (83/03/21,02:07:20) */
 
+extern void error(char *);
+char * findglb (char *);
+char * findloc (char *);
+int * readwhile();
+int * findwhile();
+int * readswitch();
+
+
+
+
 
 #define	FOREVER	for(;;)
 #define	FALSE	0
@@ -18,8 +28,8 @@
 
 /* symbol table parameters */
 
-#define	SYMSIZ	14
-#define	SYMTBSZ	2800
+#define	SYMSIZ	16
+#define	SYMTBSZ	3200
 #define	NUMGLBS	150
 #define	STARTGLB	symtab
 #define	ENDGLB	(STARTGLB+NUMGLBS*SYMSIZ)
@@ -29,10 +39,11 @@
 /* symbol table entry format */
 
 #define	NAME	0
-#define	IDENT	9
-#define	TYPE	10
-#define	STORAGE	11
-#define	OFFSET	12
+#define	IDENT	11
+#define	TYPE	12
+#define	STORAGE	13
+// OFFSET is low byte, OFFSET+1 at [15] is highbyte, so [15] is used
+#define	OFFSET	14
 
 /* system-wide name size (for symbols) */
 
@@ -60,10 +71,13 @@
 #define	STATIC	4
 #define	LSTATIC	5
 #define	DEFAUTO	6
+
 /* "do"/"for"/"while"/"switch" statement stack */
 
-#define	WSTABSZ	100
-#define	WSSIZ	7
+// changed from 100 to 128 to be a multiple of 8
+#define	WSTABSZ	128
+// changed from 7 to 8 to try to make int pointers align, but this should be int array size anyway, not char, so not sure
+#define	WSSIZ	8
 #define	WSMAX	ws+WSTABSZ-WSSIZ
 
 /* entry offsets in "do"/"for"/"while"/"switch" stack */

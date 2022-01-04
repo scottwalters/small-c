@@ -10,6 +10,7 @@
 /*
  *	declare a static variable
  */
+void
 declglb (typ, stor)
 int	typ,
 	stor;
@@ -51,6 +52,7 @@ int	typ,
  *	works just like "declglb", but modifies machine stack and adds
  *	symbol table entry with appropriate stack offset to find it again
  */
+void
 declloc (typ, stclass)
 int	typ, stclass;
 {
@@ -86,10 +88,15 @@ int	typ, stclass;
 					k = intsize();
 			if (stclass != LSTATIC) {
 				k = galign(k);
-				stkp = modstk (stkp - k);
-				addloc (sname, j, typ, stkp, AUTO);
-			} else
+				/* stkp = modstk(stkp - k);  XXX stack growing up for nisan... arbitrary but testing avoiding negative numbers since that's currently getting mangled going from 64 to 16 bit */
+				/* stkp = modstk(stkp + k);  XXX end of the array vs the start is recorded when the stack grows upwards */
+				fprintf(stderr, "debug: declloc: adding %s, stk=%lx\n", sname, stkp);
+				addloc(sname, j, typ, stkp, AUTO);  // j is ARRAY, POINTER, VARIABLE, k is storage size, stkp is relative stack location
+				stkp = modstk(stkp + k); // XXXXXX testing allocating storage after
+				// fprintf(stderr, "debug: declloc: added %s, new stk=%lx\n", sname, stkp);
+			} else {
 				addloc( sname, j, typ, k, LSTATIC);
+			}
 			break;
 		}
 		if (!match (","))
@@ -100,6 +107,7 @@ int	typ, stclass;
 /*
  *	get required array size
  */
+int
 needsub ()
 {
 	int	num[1];
@@ -118,6 +126,7 @@ needsub ()
 	return (num[0]);
 }
 
+char *
 findglb (sname)
 char	*sname;
 {
@@ -125,13 +134,16 @@ char	*sname;
 
 	ptr = STARTGLB;
 	while (ptr != glbptr) {
+                // fprintf(stderr, "debug: looking for %s at offset %ud which holds %s\n", sname, ptr, ptr);
 		if (astreq (sname, ptr, NAMEMAX))
 			return (ptr);
 		ptr = ptr + SYMSIZ;
 	}
+	// fprintf(stderr, "debug: findglb on ``%s`` failed.\n", sname);
 	return (0);
 }
 
+char *
 findloc (sname)
 char	*sname;
 {
@@ -159,6 +171,7 @@ int	value,
 		error ("global symbol table overflow");
 		return (0);
 	}
+	// fprintf(stderr, "debug: addglb adding ``%s``.\n", sname);
 	cptr = ptr = glbptr;
 	while (an (*ptr++ = *sname++));
 	cptr[IDENT] = id;
@@ -176,6 +189,7 @@ int	value, stclass;
 {
 	char	*ptr;
 	int	k;
+	char *origsname = sname;
 
 	if (cptr = findloc (sname))
 		return (cptr);
@@ -199,8 +213,9 @@ int	value, stclass;
 		value = k;
 	} else
 		value = galign(value);
-	cptr[OFFSET] = value & 0xff;
+	cptr[OFFSET] = value & 0xff;               // XXX it would be better to have a parrallel array of long ints (or void *s) instead of requiring pointers to be 16 bits and doing this kludge
 	cptr[OFFSET+1] = (value >> 8) & 0xff;
+	// fprintf(stderr, "debug: addloc: adding %s, offset=%lx, low=%hhu, high=%hhu\n", origsname, value, cptr[OFFSET], cptr[OFFSET+1]);
 	locptr = locptr + SYMSIZ;
 	return (cptr);
 }
@@ -239,8 +254,11 @@ char	*sname;
 	nl ();
 }
 
-glint(syment) char *syment; {
+glint(syment)
+char *syment; 
+{
 	int l,u,r;
+	// fprintf(stderr, "debug: glint: fetching %s, low=%hhu, high=%hhu\n", syment, syment[OFFSET], syment[OFFSET+1]);
 	l = syment[OFFSET];
 	u = syment[OFFSET+1];
 	r = (l & 0xff) + ((u << 8) & ~0x00ff);

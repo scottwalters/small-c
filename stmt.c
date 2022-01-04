@@ -7,6 +7,12 @@
 #include "defs.h"
 #include "data.h"
 
+void compound (int);
+void doif();
+void dodo();
+void dobreak();
+void docont();
+
 /*
  *	statement parser
  *
@@ -137,6 +143,7 @@ stst ()
  *	'func' is true if we are in a "function_statement", which
  *	must contain "statement_list"
  */
+void
 compound (func)
 int	func;
 {
@@ -159,6 +166,7 @@ int	func;
 /*
  *	"if" statement
  */
+void
 doif ()
 {
 	int	fstkp, flab1, flab2;
@@ -166,6 +174,7 @@ doif ()
 
 	flev = locptr;
 	fstkp = stkp;
+	fprintf(stderr, "debug: doif: stkp = %d\n", stkp);
 	flab1 = getlabel ();
 	test (flab1, FALSE);
 	statement (NO);
@@ -188,9 +197,10 @@ doif ()
  */
 dowhile ()
 {
-	int	ws[7];
+	int	ws[WSSIZ];
 
 	ws[WSSYM] = locptr;
+	fprintf(stderr, "debug: dowhile: stkp = %d\n", stkp);
 	ws[WSSP] = stkp;
 	ws[WSTYP] = WSWHILE;
 	ws[WSTEST] = getlabel ();
@@ -209,11 +219,13 @@ dowhile ()
 /*
  *	"do" statement
  */
+void
 dodo ()
 {
-	int	ws[7];
+	int	ws[WSSIZ];
 
 	ws[WSSYM] = locptr;
+	fprintf(stderr, "debug: dodo: stkp = %d\n", stkp);
 	ws[WSSP] = stkp;
 	ws[WSTYP] = WSDO;
 	ws[WSBODY] = getlabel ();
@@ -239,10 +251,11 @@ dodo ()
  */
 dofor ()
 {
-	int	ws[7],
+	int	ws[WSSIZ],
 		*pws;
 
 	ws[WSSYM] = locptr;
+	fprintf(stderr, "debug: dofor: stkp = %d\n", stkp);
 	ws[WSSP] = stkp;
 	ws[WSTYP] = WSFOR;
 	ws[WSTEST] = getlabel ();
@@ -285,7 +298,7 @@ dofor ()
  */
 doswitch ()
 {
-	int	ws[7];
+	int	ws[WSSIZ];
 	int	*ptr;
 
 	ws[WSSYM] = locptr;
@@ -364,6 +377,7 @@ doreturn ()
 /*
  *	"break" statement
  */
+void
 dobreak ()
 {
 	int	*ptr;
@@ -377,6 +391,7 @@ dobreak ()
 /*
  *	"continue" statement
  */
+void
 docont ()
 {
 	int	*ptr;

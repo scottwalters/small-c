@@ -7,8 +7,12 @@
 #include "defs.h"
 #include "data.h"
 
-main (argc, argv)
-int	argc, *argv;
+void errorsummary();
+void dumplits();
+void dumpglbs();
+
+int
+main (int argc, char **argv)
 {
 	char	*p,*bp;
 	int smacptr;
@@ -51,7 +55,7 @@ int	argc, *argv;
 		usage();
 	while (p) {
 		errfile = 0;
-		if (typeof(p) == 'c') {
+		if (_typeof(p) == 'c') {
 			glbptr = STARTGLB;
 			locptr = STARTLOC;
 			wsptr = ws;
@@ -85,9 +89,9 @@ int	argc, *argv;
 			 *	compiler body
 			 */
 			if (!openin (p))
-				return;
+				return 0;
 			if (!openout ())
-				return;
+				return 0;
 			header ();
 			gtext ();
 			parse ();
@@ -183,6 +187,7 @@ int stclass; {
 /*
  *	dump the literal pool
  */
+void
 dumplits ()
 {
 	int	j, k;
@@ -209,6 +214,7 @@ dumplits ()
 /*
  *	dump all static variables
  */
+void
 dumpglbs ()
 {
 	int	j;
@@ -241,6 +247,7 @@ dumpglbs ()
 /*
  *	report errors
  */
+void
 errorsummary ()
 {
 	if (ncmp)
@@ -266,7 +273,7 @@ errorsummary ()
 	pl (errcnt ? "Error(s)" : "No errors");
 }
 
-typeof(s)
+_typeof(s)
 char	*s; {
 	s += strlen(s) - 2;
 	if (*s == '.')

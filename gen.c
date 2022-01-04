@@ -7,11 +7,14 @@
 #include "defs.h"
 #include "data.h"
 
+void outdec (int number);
+
 
 /*
  *	return next available internal label number
  *
  */
+int
 getlabel ()
 {
 	return (nxtlab++);
@@ -88,6 +91,7 @@ char	ptr[];
 	outstr (ptr);
 }
 
+void
 outdec (number)
 int	number;
 {
@@ -106,7 +110,7 @@ int	number;
 	}
 	while (k >= 1) {
 		c = number / k + '0';
-		if ((c != '0' | (k == 1) | zs)) {
+		if ((( c != '0' ) | (k == 1) | zs)) { // sdw parens around c != '0'
 			zs = 1;
 			outbyte (c);
 		}
@@ -116,7 +120,7 @@ int	number;
 }
 		
 store (lval)
-int	*lval;
+long int	*lval;
 {
 	if (lval[1] == 0)
 		putmem (lval[0]);
@@ -125,7 +129,7 @@ int	*lval;
 }
 
 rvalue (lval)
-int	*lval;
+long int	*lval;
 {
 	if ((lval[0] != 0) & (lval[1] == 0))
 		getmem (lval[0]);

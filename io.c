@@ -7,6 +7,8 @@
 #include "defs.h"
 #include "data.h"
 
+void fixname (char *s);
+
 /*
  *	open input file
  */
@@ -53,6 +55,7 @@ char	*s;
  *	remove NL from filenames
  *
  */
+void
 fixname (s)
 char	*s;
 {
@@ -82,7 +85,8 @@ kill ()
 	line[lptr] = 0;
 }
 
-inline ()
+void
+_inline ()
 {
 	int	k;
 	FILE	*unit;
@@ -129,7 +133,7 @@ inbyte ()
 inchar ()
 {
 	if (ch () == 0)
-		inline ();
+		_inline ();
 	if (feof (input))
 		return (0);
 	return (gch ());

@@ -7,6 +7,7 @@
 #include "defs.h"
 #include "data.h"
 
+void
 addwhile (ptr)
 int	ptr[];
 {
@@ -16,9 +17,11 @@ int	ptr[];
 		error ("too many active whiles");
 		return;
 	}
+        // fprintf(stderr, "debug: wsptr before = %lx\n", wsptr);
 	k = 0;
 	while (k < WSSIZ)
 		*wsptr++ = ptr[k++];
+        // fprintf(stderr, "debug: wsptr after = %lx\n", wsptr);
 }
 
 delwhile ()
@@ -27,6 +30,7 @@ delwhile ()
 		wsptr = wsptr - WSSIZ;
 }
 
+int *
 readwhile ()
 {
 	if (wsptr == ws) {
@@ -36,6 +40,7 @@ readwhile ()
 		return (wsptr-WSSIZ);
 }
 
+int *
 findwhile ()
 {
 	int	*ptr;
@@ -49,6 +54,7 @@ findwhile ()
 	return (0);
 }
 
+int *
 readswitch ()
 {
 	int	*ptr;
@@ -59,6 +65,7 @@ readswitch ()
 	return (0);
 }
 
+void
 addcase (val)
 int	val;
 {

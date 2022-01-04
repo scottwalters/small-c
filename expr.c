@@ -13,10 +13,11 @@
  *	lval[2] - type pointer or array, else 0
  */
 
+void
 expression (comma)
 int	comma;
 {
-	int	lval[3];
+	long int	lval[3];  // make the slots large enough to hold 64 bit addresses
 
 	do {
 		if (heir1 (lval))
@@ -27,9 +28,10 @@ int	comma;
 }
 
 heir1 (lval)
-int	lval[];
+long int	lval[];
 {
-	int	k, lval2[3];
+	int	k;
+        long int lval2[3];
 	char	fc;
 
 	k = heir1a (lval);
@@ -99,9 +101,10 @@ int	lval[];
 }
 
 heir1a (lval)
-int	lval[];
+long int	lval[];
 {
-	int	k, lval2[3], lab1, lab2;
+	int	k, lab1, lab2;
+        long int lval2[3];
 
 	k = heir1b (lval);
 	blanks ();
@@ -133,9 +136,10 @@ int	lval[];
 }
 
 heir1b (lval)
-int	lval[];
+long int	lval[];
 {
-	int	k, lval2[3], lab;
+	int	k, lab;
+        long int lval2[3];
 
 	k = heir1c (lval);
 	blanks ();
@@ -157,9 +161,10 @@ int	lval[];
 }
 
 heir1c (lval)
-int	lval[];
+long int	lval[];
 {
-	int	k, lval2[3], lab;
+	int	k, lab;
+        long int lval2[3];
 
 	k = heir2 (lval);
 	blanks ();
@@ -181,9 +186,9 @@ int	lval[];
 }
 
 heir2 (lval)
-int	lval[];
+long int	lval[];
 {
-	int	k, lval2[3];
+	int	k; long int lval2[3];
 
 	k = heir3 (lval);
 	blanks ();
@@ -205,9 +210,9 @@ int	lval[];
 }
 
 heir3 (lval)
-int	lval[];
+long int	lval[];
 {
-	int	k, lval2[3];
+	int	k; long int lval2[3];
 
 	k = heir4 (lval);
 	blanks ();
@@ -229,9 +234,9 @@ int	lval[];
 }
 
 heir4 (lval)
-int	lval[];
+long int	lval[];
 {
-	int	k, lval2[3];
+	int	k; long int lval2[3];
 
 	k = heir5 (lval);
 	blanks ();
@@ -253,9 +258,9 @@ int	lval[];
 }
 
 heir5 (lval)
-int	lval[];
+long int	lval[];
 {
-	int	k, lval2[3];
+	int	k; long int lval2[3];
 
 	k = heir6 (lval);
 	blanks ();
@@ -281,9 +286,9 @@ int	lval[];
 }
 
 heir6 (lval)
-int	lval[];
+long int	lval[];
 {
-	int	k, lval2[3];
+	int	k; long int lval2[3];
 
 	k = heir7 (lval);
 	blanks ();
@@ -344,9 +349,10 @@ int	lval[];
 }
 
 heir7 (lval)
-int	lval[];
+long int	lval[];
 {
-	int	k, lval2[3];
+	int	k;
+        long int lval2[3];
 
 	k = heir8 (lval);
 	blanks ();
@@ -375,9 +381,10 @@ int	lval[];
 }
 
 heir8 (lval)
-int	lval[];
+long int	lval[];
 {
-	int	k, lval2[3];
+	int	k;
+	long int lval2[3];
 
 	k = heir9 (lval);
 	blanks ();
@@ -418,9 +425,10 @@ int	lval[];
 }
 
 heir9 (lval)
-int	lval[];
+long int	lval[];
 {
-	int	k, lval2[3];
+	int	k;
+	long int lval2[3];
 
 	k = heir10 (lval);
 	blanks ();
@@ -451,7 +459,7 @@ int	lval[];
 }
 
 heir10 (lval)
-int	lval[];
+long int	lval[];
 {
 	int	k;
 	char	*ptr;
@@ -557,13 +565,13 @@ int	lval[];
 }
 
 heir11 (lval)
-int	*lval;
+long int	*lval;
 {
 	int	k;
 	char	*ptr;
 
 	k = primary (lval);
-	ptr = lval[0];
+	ptr = (char *)lval[0];
 	blanks ();
 	if ((ch () == '[') | (ch () == '('))
 		FOREVER {
@@ -582,8 +590,10 @@ int	*lval;
 				gpush ();
 				expression (YES);
 				needbrack ("]");
+                                /* sdw already point at words not bytes
 				if (ptr[TYPE] == CINT)
 					gaslint ();
+                                */
 				gadd (NULL,NULL);
 				lval[0] = 0;
 				lval[1] = ptr[TYPE];

@@ -7,6 +7,7 @@
 #include "defs.h"
 #include "data.h"
 
+void
 error (ptr)
 char	ptr[];
 {

@@ -7,11 +7,12 @@ TARGDIR = /u/clewis/lib
 INCDIR = "/u/clewis/src/scc/include/"
 
 INSTFLAGS = -DINCDIR=$(INCDIR)
-CFLAGS = '$(INSTFLAGS)' -O
+CFLAGS = '$(INSTFLAGS)' -g 
 AR = ar
 ARFLAGS = rv
 
-LIB = scclib.a
+# LIB = scclib.a  # related to the 'lib' directory somehow?
+LIB = 
 
 FE =	$(LIB)(data.o) \
 	$(LIB)(error.o) \
@@ -27,9 +28,13 @@ FE =	$(LIB)(data.o) \
 	$(LIB)(sym.o) \
 	$(LIB)(while.o)
 
-all:	scc8080 sccas09 sccvax sccm68k
+# all:	scc8080 sccas09 sccvax sccm68k
+# all:	sccm68k
+all:	sccnisan
 
-$(FE) code8080.o codeas09.o codevax.o codem68k.o: defs.h data.h
+# $(FE) code8080.o codeas09.o codevax.o codem68k.o: defs.h data.h
+# $(FE) codem68k.o: defs.h data.h
+$(FE) codenisan.o: defs.h data.h
 
 install:	all
 	mv sccvax scc8080 sccas09 sccm68k $(TARGDIR)
@@ -39,22 +44,26 @@ $(LIB):	$(FE)
 	-ranlib $(LIB)
 	-ucb ranlib $(LIB)
 
-scc8080:	code8080.o $(LIB)
-	$(CC) -o scc8080 $(CFLAGS) $(LIB) code8080.o
+#scc8080:	code8080.o $(LIB)
+#	$(CC) -o scc8080 $(CFLAGS) $(LIB) code8080.o
 
-sccas09:	codeas09.o $(LIB)
+#sccas09:	codeas09.o $(LIB)
 	$(CC) -o sccas09 $(CFLAGS) $(LIB) codeas09.o
 
-sccvax:		codevax.o $(LIB)
-	$(CC) -o sccvax $(CFLAGS) $(LIB) codevax.o
+#sccvax:		codevax.o $(LIB)
+#	$(CC) -o sccvax $(CFLAGS) $(LIB) codevax.o
 
-sccm68k:	codem68k.o $(LIB)
-	$(CC) -o sccm68k $(CFLAGS) $(LIB) codem68k.o
+# I started hacking stuff up here
+#sccm68k:	codem68k.o $(LIB)
+#	$(CC) -o sccm68k $(CFLAGS) codem68k.o data.o error.o expr.o function.o gen.o io.o lex.o main.o preproc.o primary.o stmt.o sym.o while.o
+
+sccnisan:	code_nisan.o data.o error.o expr.o function.o gen.o io.o lex.o main.o preproc.o primary.o stmt.o sym.o while.o
+	$(CC) -o sccnisan $(CFLAGS) code_nisan.o data.o error.o expr.o function.o gen.o io.o lex.o main.o preproc.o primary.o stmt.o sym.o while.o
 
 print:
 	pr -n defs.h data.h data.c error.c expr.c function.c gen.c \
 		io.c lex.c main.c preproc.c primary.c stmt.c \
 		sym.c while.c code*.c | lp
 clean:
-	rm -f $(LIB) code8080.o codeas09.o codevax.o codem68k.o \
-		     sccvax scc8080 sccas09 sccm68k
+	rm -f code8080.o codeas09.o codevax.o codem68k.o *.o \
+		     sccvax scc8080 sccas09 sccm68k sccnisan

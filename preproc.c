@@ -7,6 +7,11 @@
 #include "defs.h"
 #include "data.h"
 
+void doundef();
+void preprocess();
+void doifdef(int);
+void addmac();
+
 /*
  *	open an include file
  */
@@ -72,7 +77,7 @@ doasm ()
 {
 	cmode = 0;
 	FOREVER {
-		inline ();
+		_inline ();
 		if (match ("#endasm"))
 			break;
 		if (feof (input))
@@ -89,6 +94,7 @@ dodefine ()
 	addmac();
 }
 
+void
 doundef ()
 {
 	int	mp;
@@ -105,12 +111,14 @@ doundef ()
 	kill();
 }
 
+void
 preprocess ()
 {
 	if (ifline()) return;
 	while (cpp());
 }
 
+void
 doifdef (ifdef)
 int ifdef;
 {
@@ -127,7 +135,7 @@ int ifdef;
 ifline()
 {
 	FOREVER {
-		inline();
+		_inline();
 		if (feof(input)) return(1);
 		if (match("#ifdef")) {
 			doifdef(YES);
@@ -218,7 +226,7 @@ cpp ()
 					}
 				} else {
 					if (ch () == 0)
-						inline ();
+						_inline ();
 					else
 						inchar ();
 					if (feof (input))
@@ -272,6 +280,7 @@ char *s;
 	addmac();
 }
 
+void
 addmac ()
 {
 	char	sname[NAMESIZE];

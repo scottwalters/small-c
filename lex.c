@@ -7,6 +7,8 @@
 #include "defs.h"
 #include "data.h"
 
+void blanks();
+
 /*
  *	semicolon enforcer
  *
@@ -17,6 +19,7 @@ ns ()
 {
 	if (!match (";"))
 		error ("missing semicolon");
+	gns();  /* almost certainly no code generation required but useful for adding debugging info to the assembly file */
 }
 
 junk ()
@@ -154,6 +157,7 @@ int	len;
 	return (0);
 }
 
+void
 blanks ()
 {
 	FOREVER {
