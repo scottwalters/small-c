@@ -194,7 +194,7 @@ void
 ppubext(scptr) char *scptr; {
         ol("// ppubext TODO ");
 	if(scptr[STORAGE] == STATIC) return;
-        error("extrn public probably needs work");
+        // error("extrn public probably needs work");
 	// ot("global\t");
 	// prefix();
 	// outstr(scptr);
