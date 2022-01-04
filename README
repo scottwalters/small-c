@@ -1,3 +1,74 @@
+
+
+Experimental Small C for Noam Nisan's often used Hack/Nand2Tetris
+academic processor as described in Nisan's _The Elements of
+Computing Systems: Building a Modern Computer from First
+Principels_ based on Chris Lewis' version of the original
+Small C compiler by James E. Hendrix and published in
+Dr. Dobbs Journal.  Chris Lewis' README is preserved below the cut.
+
+There's nothing modern about Nisan's platform, despite the name.  Not
+wanting to write one more line of assembly for this complete dog,
+especially not a bubble sort implementation, motiviated me to get a
+compiler going.  The complete mudsucker doesn't even have a jsr
+(more on that in a minute).  Not only was the 68000 always vastly
+shorter than the backend implement for Nisan's ISA, so was the 8080.
+
+Anyway, method calls are not implemented, nor are most of the logic
+ops.  I'm not sure that stack handling will continue to work for
+subroutines.  I implemented what I needed for the bubble sort
+code in test.c and now I'm out of time at least until I actually
+finish my homework for the week or likely forever.
+
+Despite the lack of any type of jsr, operating on the program
+counter, pushing the program counter to the stack that doesn't
+exist in the processor (ha), manually linking returns from a
+register after a jsr that doesn't push to the non-existant, it should
+still be possible to implement subroutines/method calls by generating
+a label for the return position, loading that, pushing it on to a
+user-maintained stack as I've implemented in here, then jumping.
+A return of course would be a jump to that after fetching it off
+the stack.
+
+No "secondary register" is used in this implementation because
+the Nisan machine ain't got one.  Seroiusly though, the A register
+could be used if absolutely no memory access was needed.  That may
+or may not hold.  I didn't check.  As it is, the secondary register
+is always just the stack top.  An evaluation stack is strictly
+required but a "secondary register" is not.
+
+imo it would be an improvement to have a separate evaluation stack
+from call/local variable stack.  A pretty small evaluation stack
+should serve fine and would simplify finding and accessing local
+vars on the stack by the compiler.  That reminds me that I did a
+strange thing and made the stack grow up instead of down even though
+that wound up causing grief and requiring changes outside of the
+backend.  All of the other backends are almost certainly broken
+by those changes.  I just wanted to be able to see the stack in
+low memory next to other critical variables in the CPU Emulator
+Java app but as it turns out, the stack pointer really is the
+only other variable and it could go to high memory immediately
+above the stack.  Either by making the stack grow downward again
+or by making that controlled by methods in the code generating
+backend (code_nisan.c in this case), it would be nice to fix that.
+(I was also suspecting that negative integer handling was corrupting
+the stkp stack pointer but it was not.)
+
+Also, this very much did not build on clang 11.1.0 which hated
+non-void functions returning empty.  I should have just modified
+those to return 0 instead of adding "void", or else this Small C
+should be modified to ignore the "void" keyword before functions.
+Either way, I broke it from being self compiling with that.  Really,
+all of this was a hasty first pass.  Also, this compiler was very
+much broken on 64 bit architectures.  I sparked some 'long's around
+like pixie dust until it started working.  So to be eslf-hosting
+again, it could ignore "long" before variables.
+
+
+
+
+---------------8<---------------------------------------------------------
+
 			Small C version C3.0R1.1
 			      (SCC3)
 
