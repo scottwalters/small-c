@@ -1,0 +1,1754 @@
+
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00000829b4832a6c in newfunc () at function.c:35
+35                      if (ptr[IDENT] != FUNCTION)
+#0  0x00000829b4832a6c in newfunc () at function.c:35
+#1  0x00000829b483516a in parse () at main.c:162
+#2  0x00000829b4834d74 in main (argc=1, argv=0x7f7ffffdeb38) at main.c:97
+
+
+        if (ptr = findglb (n)) {
+                if(! ptr)
+                    fprintf(stderr, "debug: findglb failed");
+                if (ptr[IDENT] != FUNCTION)                                  <--
+                        multidef (n);
+                else if (ptr[OFFSET] == FUNCTION)
+                        multidef (n);
+                else
+                        ptr[OFFSET] = FUNCTION;
+        } else
+                addglb (n, FUNCTION, CINT, FUNCTION, PUBLIC);
+
+
+49:#define     FUNCTION      4
+34:#define     IDENT 9
+59:                    glbptr = STARTGLB;
+23:#define     SYMSIZ        14
+
+
+int
+findglb (sname)
+char    *sname;
+{
+        char    *ptr;
+
+        ptr = STARTGLB;
+        while (ptr != glbptr) {
+                if (astreq (sname, ptr, NAMEMAX))
+                        return (ptr);
+                ptr = ptr + SYMSIZ;
+        }
+        fprintf(stderr, "debug: findglb on ``%s`` failed.\n", sname);
+        return (0);
+}
+
+
+
+no while?  but there's a while.c
+
+debug: addglb adding ``while``.
+#while ( flag == 1)
+
+.......
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00000662d43b757d in getloc (sym=0xffffffffd43c5250 <Address 0xffffffffd43c5250 out of bounds>) at code_nisan.c:239
+239             if (sym[STORAGE] == LSTATIC) {
+Current language:  auto; currently minimal
+(gdb) bt
+#0  0x00000662d43b757d in getloc (sym=0xffffffffd43c5250 <Address 0xffffffffd43c5250 out of bounds>) at code_nisan.c:239
+#1  0x00000662d43becba in primary (lval=0x7f7ffffd11b8) at primary.c:51
+#2  0x00000662d43ba774 in heir11 (lval=0x7f7ffffd11b8) at expr.c:566
+#3  0x00000662d43ba604 in heir10 (lval=0x7f7ffffd11b8) at expr.c:530
+#4  0x00000662d43ba0d2 in heir9 (lval=0x7f7ffffd11b8) at expr.c:426
+#5  0x00000662d43b9ed2 in heir8 (lval=0x7f7ffffd11b8) at expr.c:383
+#6  0x00000662d43b9cf2 in heir7 (lval=0x7f7ffffd11b8) at expr.c:352
+#7  0x00000662d43b99c2 in heir6 (lval=0x7f7ffffd11b8) at expr.c:289
+#8  0x00000662d43b9852 in heir5 (lval=0x7f7ffffd11b8) at expr.c:261
+#9  0x00000662d43b96d2 in heir4 (lval=0x7f7ffffd11b8) at expr.c:237
+#10 0x00000662d43b9582 in heir3 (lval=0x7f7ffffd11b8) at expr.c:213
+#11 0x00000662d43b9402 in heir2 (lval=0x7f7ffffd11b8) at expr.c:189
+#12 0x00000662d43b92e2 in heir1c (lval=0x7f7ffffd11b8) at expr.c:165
+#13 0x00000662d43b91b2 in heir1b (lval=0x7f7ffffd11b8) at expr.c:141
+#14 0x00000662d43b9002 in heir1a (lval=0x7f7ffffd11b8) at expr.c:107
+#15 0x00000662d43b8c32 in heir1 (lval=0x7f7ffffd11b8) at expr.c:36
+#16 0x00000662d43b8bb1 in expression (comma=1) at expr.c:23
+#17 0x00000662d43bffeb in stst () at stmt.c:127
+#18 0x00000662d43bfb14 in compound (func=1) at stmt.c:161
+#19 0x00000662d43bf9d6 in statement (func=1) at stmt.c:35
+#20 0x00000662d43bae73 in newfunc () at function.c:93
+#21 0x00000662d43bd1da in parse () at main.c:162
+#22 0x00000662d43bcde4 in main (argc=1, argv=0x7f7ffffd1438) at main.c:97
+
+
+/* 
+ *      fetch the address of the specified symbol into the primary register
+ *
+ */
+getloc (sym)
+char    *sym;
+{ 
+        if (sym[STORAGE] == LSTATIC) {
+                immed();
+                printlabel(glint(sym));
+                nl();
+        } else { 
+                ot ("lea.l\t");
+                onum (glint(sym) - stkp);
+                outstr (",%a0\n");
+                ol ("mov.l\t%a0,%d0");
+        }
+}
+
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00000f15726b8834 in heir11 (lval=0x7f7ffffca928) at expr.c:577
+577                                     } else if (ptr[IDENT] == POINTER)
+Current language:  auto; currently minimal
+(gdb) bt
+#0  0x00000f15726b8834 in heir11 (lval=0x7f7ffffca928) at expr.c:577
+#1  0x00000f15726b8604 in heir10 (lval=0x7f7ffffca928) at expr.c:530
+#2  0x00000f15726b80d2 in heir9 (lval=0x7f7ffffca928) at expr.c:426
+#3  0x00000f15726b7ed2 in heir8 (lval=0x7f7ffffca928) at expr.c:383
+#4  0x00000f15726b7cf2 in heir7 (lval=0x7f7ffffca928) at expr.c:352
+#5  0x00000f15726b79c2 in heir6 (lval=0x7f7ffffca928) at expr.c:289
+#6  0x00000f15726b7852 in heir5 (lval=0x7f7ffffca928) at expr.c:261
+#7  0x00000f15726b76d2 in heir4 (lval=0x7f7ffffca928) at expr.c:237
+#8  0x00000f15726b7582 in heir3 (lval=0x7f7ffffca928) at expr.c:213
+#9  0x00000f15726b7402 in heir2 (lval=0x7f7ffffca928) at expr.c:189
+#10 0x00000f15726b72e2 in heir1c (lval=0x7f7ffffca928) at expr.c:165
+#11 0x00000f15726b71b2 in heir1b (lval=0x7f7ffffca928) at expr.c:141
+#12 0x00000f15726b7002 in heir1a (lval=0x7f7ffffca928) at expr.c:107
+#13 0x00000f15726b6c32 in heir1 (lval=0x7f7ffffca928) at expr.c:36
+#14 0x00000f15726b6bb1 in expression (comma=1) at expr.c:23
+#15 0x00000f15726bdfeb in stst () at stmt.c:127
+#16 0x00000f15726bdb14 in compound (func=1) at stmt.c:161
+#17 0x00000f15726bd9d6 in statement (func=1) at stmt.c:35
+#18 0x00000f15726b8e73 in newfunc () at function.c:93
+#19 0x00000f15726bb1da in parse () at main.c:162
+#20 0x00000f15726bade4 in main (argc=1, argv=0x7f7ffffcaba8) at main.c:97
+(gdb) 
+
+
+heir11 (lval)
+int     *lval;
+{
+        int     k;
+        char    *ptr;
+
+        k = primary (lval);
+        ptr = lval[0];                                                     <--- symbol table entries stored by address in lval structures
+        blanks ();
+        if ((ch () == '[') | (ch () == '('))
+                FOREVER {
+                        if (match ("[")) {
+                                if (ptr == 0) {
+                                        error ("can't subscript");
+                                        junk ();
+                                        needbrack ("]");
+                                        return (0);
+                                } else if (ptr[IDENT] == POINTER)           <----
+
+
+/*
+ *      lval[0] - symbol table address, else 0 for constant
+ *      lval[1] - type indirect object to fetch, else 0 for static object
+ *      lval[2] - type pointer or array, else 0
+ */
+
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00000ea92b129854 in heir11 (lval=0x7f7ffffe2060) at expr.c:584
+584                                     } else if (ptr[IDENT] == POINTER)
+
+
+(gdb) p ptr
+$1 = 0x2bec1a270 <Address 0x2bec1a270 out of bounds>
+(gdb) print glbptr
+$2 = 0xc7bbec19950 ""
+
+too short.
+
+2bec1a270
+112233445
+slightly longer than 4 bytes still tho...?
+
+...
+
+Program received signal SIGSEGV, Segmentation fault.
+0x000009b043f8764d in putmem (sym=0x0) at code_nisan.c:259
+259             if ((sym[IDENT] != POINTER) & (sym[TYPE] == CCHAR)) {
+
+(gdb) bt
+#0  0x000009b043f8764d in putmem (sym=0x0) at code_nisan.c:259
+#1  0x000009b043f8b586 in store (lval=0x7f7ffffd5a60) at gen.c:125
+#2  0x000009b043f88ca7 in heir1 (lval=0x7f7ffffd5a60) at expr.c:47
+#3  0x000009b043f88bb1 in expression (comma=1) at expr.c:23
+#4  0x000009b043f9002b in stst () at stmt.c:127
+#5  0x000009b043f8fb54 in compound (func=1) at stmt.c:161
+#6  0x000009b043f8fa16 in statement (func=1) at stmt.c:35
+#7  0x000009b043f8ae93 in newfunc () at function.c:93
+#8  0x000009b043f8d1fa in parse () at main.c:162
+#9  0x000009b043f8ce04 in main (argc=1, argv=0x7f7ffffd5cf8) at main.c:97
+
+store (lval)
+long int        *lval;
+{
+        if (lval[1] == 0)
+                putmem (lval[0]);
+        else
+                putstk (lval[1]);
+}
+... putmem, putstk.  ok, I think.
+
+
+...
+
+0x0000024c595774b5 in dofor () at stmt.c:268
+268             gnlabel (pws[WSTEST]);
+Current language:  auto; currently minimal
+(gdb) bt
+#0  0x0000024c595774b5 in dofor () at stmt.c:268
+#1  0x0000024c59576e79 in stst () at stmt.c:99
+#2  0x0000024c59576b54 in compound (func=0) at stmt.c:161
+#3  0x0000024c59576a56 in statement (func=0) at stmt.c:40
+#4  0x0000024c59577251 in dowhile () at stmt.c:209
+#5  0x0000024c59576dd9 in stst () at stmt.c:89
+#6  0x0000024c59576b54 in compound (func=1) at stmt.c:161
+#7  0x0000024c59576a16 in statement (func=1) at stmt.c:35
+#8  0x0000024c59571e93 in newfunc () at function.c:93
+#9  0x0000024c595741fa in parse () at main.c:162
+
+#0  0x0000024c595774b5 in dofor () at stmt.c:268
+dofor ()
+{
+        int     ws[7],
+                *pws;
+
+        ws[WSSYM] = locptr;
+        ws[WSSP] = stkp;
+        ws[WSTYP] = WSFOR;
+        ws[WSTEST] = getlabel ();  <-- just an int.
+        ws[WSINCR] = getlabel ();
+        ws[WSBODY] = getlabel ();
+        ws[WSEXIT] = getlabel ();
+        addwhile (ws);
+        pws = readwhile ();
+        needbrack ("(");
+        if (!match (";")) {
+                expression (YES);
+                ns ();
+        }
+        gnlabel (pws[WSTEST]);                         <---
+
+/* "do"/"for"/"while"/"switch" statement stack */
+
+#define WSTABSZ 100
+#define WSSIZ   7
+#define WSMAX   ws+WSTABSZ-WSSIZ
+
+/* entry offsets in "do"/"for"/"while"/"switch" stack */
+
+#define WSSYM   0
+#define WSSP    1
+#define WSTYP   2
+#define WSCASEP 3
+#define WSTEST  3
+#define WSINCR  4
+#define WSDEF   4
+#define WSBODY  5
+#define WSTAB   5
+#define WSEXIT  6
+
+/* possible entries for "wstyp" */
+
+#define WSWHILE 0
+#define WSFOR   1
+#define WSDO    2
+#define WSSWITCH        3
+
+
+p pws
+$2 = (int *) 0x5957c5dc
+may not be rounded to /4.
+yeah, round to /4 as a first thing.  not sure if it contains addresses.  assuming not for now.
+
+#define WSTABSZ 100
+// changed from 7 to 8 to try to make int pointers align, but this should be int array size anyway, not char, so not sure
+#define WSSIZ   8
+#define WSMAX   ws+WSTABSZ-WSSIZ
+
+data.c
+13:int ws[WSTABSZ];
+... so confused.  ws is just 100 ints?  100 isn't a multiple of 7
+
+while.c:
+void
+addwhile (ptr)
+int     ptr[];
+{
+        int     k;
+
+        if (wsptr == WSMAX) {
+                error ("too many active whiles");
+                return;
+        }
+        k = 0;
+        while (k < WSSIZ)
+                *wsptr++ = ptr[k++];
+}
+
+
+same:
+
+Program received signal SIGSEGV, Segmentation fault.
+0x000002edf57ef4b5 in dofor () at stmt.c:268
+268             gnlabel (pws[WSTEST]);
+Current language:  auto; currently minimal
+(gdb) bt
+#0  0x000002edf57ef4b5 in dofor () at stmt.c:268
+#1  0x000002edf57eee79 in stst () at stmt.c:99
+#2  0x000002edf57eeb54 in compound (func=0) at stmt.c:161
+#3  0x000002edf57eea56 in statement (func=0) at stmt.c:40
+#4  0x000002edf57ef251 in dowhile () at stmt.c:209
+#5  0x000002edf57eedd9 in stst () at stmt.c:89
+#6  0x000002edf57eeb54 in compound (func=1) at stmt.c:161
+#7  0x000002edf57eea16 in statement (func=1) at stmt.c:35
+#8  0x000002edf57e9e93 in newfunc () at function.c:93
+#9  0x000002edf57ec1fa in parse () at main.c:162
+#10 0x000002edf57ebe04 in main (argc=1, argv=0x7f7fffff3cb8) at main.c:97
+(gdb) 
+
+dofor ()
+{
+        int     ws[7],
+                *pws;
+
+        ws[WSSYM] = locptr;
+        ws[WSSP] = stkp;
+        ws[WSTYP] = WSFOR;
+        ws[WSTEST] = getlabel ();
+        ws[WSINCR] = getlabel ();
+        ws[WSBODY] = getlabel ();
+        ws[WSEXIT] = getlabel ();
+        addwhile (ws);
+        pws = readwhile ();
+        needbrack ("(");
+        if (!match (";")) {
+                expression (YES);
+                ns ();
+        }
+        gnlabel (pws[WSTEST]);        <--- 268
+
+#define WSTEST  3
+
+/*
+ *      gnlabel - generate numeric label
+ */
+gnlabel (nlab)
+int     nlab;
+{
+        printlabel (nlab);
+        col ();
+        nl ();
+}
+
+p pws
+$1 = (int *) 0xfffffffff57f45e0
+               1122334455667788  ... ok, cool 8 bytes
+(gdb) p *pws
+Cannot access memory at address 0xfffffffff57f45e0
+
+(gdb) p ws
+$2 = 0x7f7fffff3940
+(gdb) p *ws 
+$3 = -176209200
+
+so ws is valid, but pws is not.
+
+
+does these back to back, addwhile(ws) then pws = readwhile().
+ws[] is in local storage.
+
+void
+addwhile (ptr)
+int     ptr[];
+{
+        int     k;
+
+        if (wsptr == WSMAX) {
+                error ("too many active whiles");
+                return;
+        }
+        k = 0;
+        while (k < WSSIZ)
+                *wsptr++ = ptr[k++];
+}
+
+readwhile ()
+{
+        if (wsptr == ws) {
+                error ("no active do/for/while/switch");
+                return (0);
+        } else
+                return (wsptr-WSSIZ);
+}
+
+debug: wsptr before = 6b6f3879650
+debug: wsptr after = 6b6f3879670
+debug: wsptr before = 6b6f3879670
+debug: wsptr after = 6b6f3879690
+
+(gdb) p wsptr
+$3 = (int *) 0x6b6f3879690
+
+.....
+
+expr.c
+122:                   col ();
+126:                           error ("missing colon");
+132:                   col ();
+156:                   col ();
+181:                   col ();
+
+function.c
+47:    col ();
+95:    col();
+
+gen.c
+41:    col ();
+52:    col ();
+
+lex.c
+13: *  semicolon enforcer
+15: *  called whenever syntax requires a semicolon
+21:            error ("missing semicolon");
+
+main.c
+198:   col ();
+231:                           col ();
+
+stmt.c
+341:                   error ("missing colon");
+358:                   error ("missing colon");
+
+sym.c
+202:           col();
+
+while.c
+80:            col ();
+
+printlabel (label)
+int     label;
+{
+        olprfix ();             <-- "LL" usually
+        outdec (label);
+}
+
+
+/*
+ *      glabel - generate label
+ */
+glabel (lab)
+char    *lab;
+{
+        prefix ();
+        outstr (lab);
+        col ();
+        nl ();
+}
+
+......
+
+can't always prefix with '(', only when making a label
+        jmp     (LL7   
+(LL5)   
+ok, think we have this fixed.
+
+
+
+starting pretty high in memory which makes it harder to simulate/test (pointer was corrupted... wasn't supposed to be high)
+        @27404
+        D=A
+
+        // modstk TODO
+        // asl TODO
+        asl.l   &2,%d0
+        // gadd TODO
+        add.l   (%sp)+,%d0
+        // geq TODO
+        // gcall TODO
+        jsr     Teq
+        // testjump TODO
+        cmp.l   %d0,&0
+        bne     (LL3  
+        // glt TODO
+        // gcall TODO
+        jsr     Tlt
+        // testjump TODO
+        cmp.l   %d0,&0
+        beq     (LL6
+        // jump TODO
+        jmp     (LL7
+        // ginc TODO
+        addq.l  &4,%d0
+        // ggt TODO
+        // gcall TODO
+        jsr     Tgt
+        // testjump TODO
+        cmp.l   %d0,&0
+        bne     (LL8
+        // jump TODO
+        jmp     (LL5
+
+
+v/ get rid of this junk
+        jsr     Teq
+code_nisan.c
+397:gcall (sname)
+400:        ol("// gcall TODO");
+543:   gcall ("^case");
+581:   gcall ("^mult");
+593:   gcall ("^div");
+606:   gcall ("^mod");
+691:   gcall ("^lneg");
+711:   gcall ("^bool");
+754:   gcall ("^eq");
+765:   gcall ("^ne");
+776:   gcall ("^lt");
+786:   gcall ("^le");
+797:   gcall ("^gt");
+808:   gcall ("^ge");
+819:   gcall ("^ult");
+830:   gcall ("^ule");
+841:   gcall ("^ugt");
+852:   gcall ("^uge");
+
+        jsr     Tgt
+        jsr     Teq
+
+
+        ol("// ggt");
+        int label1 = getlabel();  // next sequential label number
+        int label2 = getlabel();  // next sequential label number
+        ol("@secondary");
+        ol("D=D-M"); // no idea if the sense of the test is correct but given this is an equality test, doesn't matter in this case
+        ot("@LL"); outdec(label1); nl(); // jump target
+        ol("D;JGT");  // jump to label1 if greater-than (though numbers might be backward)
+        ot("@LL"); outdec(label2); nl(); // jump target
+        ol("D=0;JMP");   // false; jump to end
+        outstr("(LL"); outdec(label1); outstr(")"); nl(); // if-greater-than target
+        ol("D=1");       // true and fall-through to end
+        outstr("(LL"); outdec(label2); outstr(")"); nl(); // end target
+
+
+...
+
+v/ asl
+v/ gadd
+v/ glt
+v/ ginc
+v/ gdec
+XXX grts... there's no jsr emitted so not sure why we have an rts.  end of the program I guess?
+XXX jsr/rts could be done but it's a bit messy.  we have to maintain our own call stack and create labels for return addresses, and push those addresses on the stack.
+
+...
+
+oh, shit... "secondary" maybe refers to the stack
+
+swap ()
+{
+        ol ("mov.l\t%d0,%d2\n\tmov.l\t%d1,%d0\n\tmov.l\t%d2,%d1");
+says no
+
+/*
+ *      pop the top of the stack into the secondary register
+ *
+ */
+gpop ()
+{
+        ol ("mov.l\t(%sp)+,%d1");
+says no.
+both use %d1 as secondary.
+but this code was noted as untested.
+
+this uses the stack tho:
+/*
+ *      add the primary and secondary registers
+ *      if lval2 is int pointer and lval is int, scale lval
+ */
+gadd (lval, lval2) int *lval, *lval2;
+{ 
+        if (dbltest (lval2, lval)) {
+                ol ("asl.l\t&2,(%sp)");
+        }
+but the 8080 code doesn't move the stack pointer or seem to use stack instructions there.  yeah, wikipedia says "DAD" uses register pairs to add in to HL.
+
+also stack:
+
+/*
+ *      subtract the primary register from the secondary
+ *
+ */
+gsub ()
+{
+        ol ("mov.l\t(%sp)+,%d2");
+        ol ("sub.l\t%d0,%d2");
+        ol ("mov.l\t%d2,%d0");
+        stkp = stkp + INTSIZE;
+}
+
+.....
+
+starting pretty high in memory which makes it harder to simulate/test
+        @27404
+ah, and also stuff winds up outputing like this then loading blank in the in the CPU simulator:
+        @-12
+
+oh, modstk is different.  it really does want to subtract.
+
+....
+
+
+starting pretty high in memory which makes it harder to simulate/test
+(this was because the high part of the address was being clobbered)
+
+        // getloc
+        @27398
+        D=A
+
+primary.c:
+
+        if (symname (sname)) {
+                if (ptr = findloc (sname)) {
+                        getloc (ptr);
+
+sym.c:
+
+char *
+findloc (sname)
+char    *sname;
+{
+        char    *ptr;
+
+        ptr = locptr;
+        while (ptr != STARTLOC) {
+                ptr = ptr - SYMSIZ;
+                if (astreq (sname, ptr, NAMEMAX))
+                        return (ptr);
+        }
+        return (0);
+}
+
+defs.h
+36:#define     STARTLOC      (ENDGLB+SYMSIZ)
+
+subtract STARTLOC maybe... but wtf is this?
+                onum(glint(sym) - stkp);    // not sure what's going on here but apparently stkp is the stack pointer
+
+the 8008 version does something like that too:
+
+/*
+ *      fetch the address of the specified symbol into the primary register
+ *
+ */
+getloc (sym)
+char    *sym;
+{
+        immed ();
+        if (sym[STORAGE] == LSTATIC) {
+                printlabel(glint(sym));
+                nl();
+        } else {
+                outdec (glint(sym) - stkp);
+                nl ();
+                ol ("dad\tsp");
+        }
+}
+... but with an add?
+09 does strange shit as well
+
+ok, if stuff is being addressed relative the stack pointer in the function frame, stkp and stackp need to agree.
+
+data.c
+30:    stkp,
+
+data.h
+24:            stkp,
+
+function.c
+71:    stkp = 0;
+99:    stkp = 0;
+
+main.c
+67:                    stkp =                 ... also 0's it out
+
+primary.c
+288:   stkp = modstk (stkp + nargs);               ... 
+
+stmt.c
+172:   int     fstkp, flab1, flab2;
+176:   fstkp = stkp;
+180:   stkp = modstk (fstkp);
+189:   stkp = modstk (fstkp);
+202:   ws[WSSP] = stkp;
+213:   stkp = modstk (ws[WSSP]);
+226:   ws[WSSP] = stkp;
+242:   stkp = modstk (ws[WSSP]);
+255:   ws[WSSP] = stkp;
+288:   stkp = modstk (pws[WSSP]);
+301:   ws[WSSP] = stkp;
+314:   stkp = stkp + intsize();  /* '?case' will adjust the stack */
+322:   stkp = modstk (ptr[WSSP]);
+
+sym.c
+91:                            stkp = modstk (stkp - k);
+92:                            addloc (sname, j, typ, stkp, AUTO);
+
+sym.c:
+
+/*
+ *      declare local variables
+ *
+ *      works just like "declglb", but modifies machine stack and adds
+ *      symbol table entry with appropriate stack offset to find it again
+ */
+void
+declloc (typ, stclass)
+int     typ, stclass;
+{
+
+                        } else  
+                                if ((typ == CCHAR) & (j != POINTER))
+                                        k = 1;
+                                else
+                                        k = intsize();
+                        if (stclass != LSTATIC) {
+                                k = galign(k);
+                                stkp = modstk (stkp - k);
+                                addloc (sname, j, typ, stkp, AUTO);
+                        } else  
+                                addloc( sname, j, typ, k, LSTATIC);
+                        break;
+
+...
+
+scott@fluffy:/home/tgz/smallc$ gdb sccnisan
+GNU gdb 6.3
+Copyright 2004 Free Software Foundation, Inc.
+GDB is free software, covered by the GNU General Public License, and you are
+welcome to change it and/or distribute copies of it under certain conditions.
+Type "show copying" to see the conditions.
+There is absolutely no warranty for GDB.  Type "show warranty" for details.
+This GDB was configured as "amd64-unknown-openbsd7.0"...
+(gdb) set args test.c
+(gdb) watch stkp
+Watchpoint 1: stkp
+(gdb) p stkp
+$1 = 0
+(gdb) run
+
+(gdb) bt
+#0  declloc (typ=2, stclass=2) at sym.c:92
+#1  0x00000937e61a823f in doldcls (stclass=2) at stmt.c:70
+#2  0x00000937e61a816d in stdecl () at stmt.c:57
+#3  0x00000937e61a807a in compound (func=1) at stmt.c:158
+#4  0x00000937e61a7f56 in statement (func=1) at stmt.c:35
+#5  0x00000937e61a33db in newfunc () at function.c:93
+#6  0x00000937e61a573a in parse () at main.c:162
+#7  0x00000937e61a5344 in main (argc=1, argv=0x7f7ffffd2538) at main.c:97
+
+(gdb) p stkp
+$1 = -6
+
+
+declloc (typ=2, stclass=2) at sym.c:92
+92                                      addloc (sname, j, typ, stkp, AUTO);
+
+Old value = -8
+New value = -9
+declloc (typ=2, stclass=2) at sym.c:92
+92                                      addloc (sname, j, typ, stkp, AUTO);
+(gdb) c
+Continuing.
+Watchpoint 1: stkp
+
+Old value = -9
+New value = -10
+gpush () at code_nisan.c:347
+347     }
+(gdb) bt
+#0  gpush () at code_nisan.c:347
+#1  0x00000937e61a2e46 in heir11 (lval=0x7f7ffffd22a0) at expr.c:590
+#2  0x00000937e61a2bbd in heir10 (lval=0x7f7ffffd22a0) at expr.c:537
+#3  0x00000937e61a2682 in heir9 (lval=0x7f7ffffd22a0) at expr.c:433
+#4  0x00000937e61a2482 in heir8 (lval=0x7f7ffffd22a0) at expr.c:389
+#5  0x00000937e61a22a2 in heir7 (lval=0x7f7ffffd22a0) at expr.c:357
+#6  0x00000937e61a1f62 in heir6 (lval=0x7f7ffffd22a0) at expr.c:293
+#7  0x00000937e61a1df2 in heir5 (lval=0x7f7ffffd22a0) at expr.c:265
+#8  0x00000937e61a1c72 in heir4 (lval=0x7f7ffffd22a0) at expr.c:241
+#9  0x00000937e61a1b22 in heir3 (lval=0x7f7ffffd22a0) at expr.c:217
+#10 0x00000937e61a19a2 in heir2 (lval=0x7f7ffffd22a0) at expr.c:193
+#11 0x00000937e61a1882 in heir1c (lval=0x7f7ffffd22a0) at expr.c:169
+#12 0x00000937e61a1752 in heir1b (lval=0x7f7ffffd22a0) at expr.c:144
+#13 0x00000937e61a15a2 in heir1a (lval=0x7f7ffffd22a0) at expr.c:109
+#14 0x00000937e61a11d2 in heir1 (lval=0x7f7ffffd22a0) at expr.c:37
+#15 0x00000937e61a1151 in expression (comma=1) at expr.c:23
+#16 0x00000937e61a856b in stst () at stmt.c:127
+#17 0x00000937e61a8094 in compound (func=1) at stmt.c:161
+#18 0x00000937e61a7f56 in statement (func=1) at stmt.c:35
+#19 0x00000937e61a33db in newfunc () at function.c:93
+#20 0x00000937e61a573a in parse () at main.c:162
+#21 0x00000937e61a5344 in main (argc=1, argv=0x7f7ffffd2538) at main.c:97
+
+Old value = -10
+New value = -11
+gpush () at code_nisan.c:347
+
+
+Old value = -11
+New value = -10
+putstk (typeobj=2 '\002') at code_nisan.c:293
+
+Old value = -10
+New value = -11
+gpush () at code_nisan.c:347
+
+lots of gpush and putstk adding and taking away.
+
+instrument those to see what's being pushed/popped?
+
+gpush is winning.  should the stack be this deep?  (nope, have to adjust stkp in the backend)
+
+Old value = -25
+New value = -26
+gpush () at code_nisan.c:347
+347     }
+(gdb) 
+Continuing.
+Watchpoint 1: stkp
+
+Old value = -28
+New value = -27
+putstk (typeobj=2 '\002') at code_nisan.c:293
+293     }
+(gdb)
+Continuing.
+Watchpoint 1: stkp
+
+thinking this is supposed to be putting it back but it really isn't
+
+ok this did a lot to put it back:
+
+Old value = -27
+New value = -17
+doif () at stmt.c:181
+181             locptr = flev;
+(gdb) 
+Continuing.
+Watchpoint 1: stkp
+
+then these finished the job:
+
+Old value = -16
+New value = -15
+0x00000937e61a87db in dowhile () at stmt.c:213
+213             stkp = modstk (ws[WSSP]);
+(gdb) 
+Continuing.
+Watchpoint 1: stkp
+
+Old value = -15
+New value = 0
+newfunc () at function.c:100
+100             locptr = STARTLOC;
+
+                onum(glint(sym) - stkp);    // not sure what's going on here but apparently stkp is the stack pointer
+
+8080 does this:
+
+modstk (newstkp)
+int     newstkp;
+{
+        int     k;
+
+        k = galign(newstkp - stkp);
+        if (k == 0)
+                return (newstkp);
+        if (k > 0) {
+                if (k < 7) {
+                        if (k & 1) {
+                                ol ("inx\tsp");
+                                k--;
+                        }
+                        while (k) {
+                                ol ("pop\tb");
+                                k = k - INTSIZE;
+                        } 
+                        return (newstkp);
+                }
+        } else {
+                if (k > -7) {
+                        if (k & 1) {
+                                ol ("dcx\tsp");
+                                k++;
+                        }
+                        while (k) {
+                                ol ("push\tb");
+                                k = k + INTSIZE;
+                        }
+                        return (newstkp);
+                }
+        }
+
+pops when newstkp - stkp > 0, pushes when newstkp - stp < 0   
+
+                onum(glint(sym) - stkp);    // not sure what's going on here but apparently stkp is the stack pointer
+
+need to figure out how stack relative addressing needs to work.
+ok, think I've mostly got it, but want a sep eval stack.
+
+code_nisan.c:
+
+void
+getloc(sym)
+char    *sym;
+{
+        ol("// getloc");
+        if (sym[STORAGE] == LSTATIC) {
+             ...
+        } else {
+                ot("@");
+                onum(glint(sym) - stkp);    <--
+
+sym.c:
+
+glint(syment) char *syment; {
+        int l,u,r;
+        l = syment[OFFSET];
+        u = syment[OFFSET+1];
+        r = (l & 0xff) + ((u << 8) & ~0x00ff);
+        return (r);
+}
+
+primary.c
+
+        if (symname (sname)) {
+                if (ptr = findloc (sname)) {
+                        getloc (ptr);
+
+sym.c again:
+
+char *
+findloc (sname)
+char    *sname;
+{
+        char    *ptr;
+
+        ptr = locptr;
+        while (ptr != STARTLOC) {
+                ptr = ptr - SYMSIZ;
+                if (astreq (sname, ptr, NAMEMAX))
+                        return (ptr);
+        }
+        return (0);
+}
+
+addloc (sname, id, typ, value, stclass)
+char    *sname, id, typ;
+int     value, stclass;
+{
+        char    *ptr;
+        int     k;
+
+        if (cptr = findloc (sname))
+                return (cptr);
+        if (locptr >= ENDLOC) {
+                error ("local symbol table overflow");
+                return (0);
+        }
+        cptr = ptr = locptr;
+        while (an (*ptr++ = *sname++));
+        cptr[IDENT] = id;
+        cptr[TYPE] = typ;
+        cptr[STORAGE] = stclass;
+        if (stclass == LSTATIC) {
+                gdata();
+                printlabel(k = getlabel());
+                col();
+                defstorage();
+                onum(value);
+                nl();
+                gtext();
+                value = k;
+        } else
+                value = galign(value);
+        cptr[OFFSET] = value & 0xff;                             <--- looks like this should be counting up from 0
+        cptr[OFFSET+1] = (value >> 8) & 0xff;
+        locptr = locptr + SYMSIZ;
+        return (cptr);
+}
+
+function.c:
+
+        argstk = 0;
+                                addloc (n, 0, 0, argstk, AUTO);
+                                argstk = argstk + intsize();
+
+
+
+.........
+
+void
+getloc(sym)
+char    *sym;
+{
+        ol("// getloc");
+        if (sym[STORAGE] == LSTATIC) {
+error("getloc with LSTATIC probably needs work");
+                immed();
+                printlabel(glint(sym));
+                nl();
+        } else {
+                ot("@");
+                fprintf(stderr, "debug: glint(sym) = %lx, stp = %lx\n", glint(sym), stkp);
+
+debug: glint(sym) = 6afa, stp = fffffff7
+debug: glint(sym) = 6afa, stp = fffffff6
+debug: glint(sym) = 6afa, stp = fffffff5
+debug: glint(sym) = 6afa, stp = fffffff4
+debug: glint(sym) = 6afa, stp = fffffff3
+debug: glint(sym) = 6afa, stp = fffffff2
+debug: glint(sym) = 74f8, stp = fffffff1
+debug: glint(sym) = 74f8, stp = fffffff1
+debug: glint(sym) = 74f8, stp = fffffff0
+debug: glint(sym) = 66f9, stp = fffffff0
+debug: glint(sym) = 66f9, stp = fffffff0
+debug: glint(sym) = 66f9, stp = ffffffef
+debug: glint(sym) = 6afa, stp = ffffffef
+debug: glint(sym) = 66f9, stp = ffffffee
+debug: glint(sym) = 6afa, stp = ffffffed
+debug: glint(sym) = 66f9, stp = ffffffec
+debug: glint(sym) = fffffff7, stp = ffffffeb
+debug: glint(sym) = 6afa, stp = ffffffea
+debug: glint(sym) = 66f9, stp = ffffffe9
+debug: glint(sym) = 6afa, stp = ffffffea
+debug: glint(sym) = 66f9, stp = ffffffe9
+debug: glint(sym) = 6afa, stp = ffffffe8
+debug: glint(sym) = 66f9, stp = ffffffe7
+debug: glint(sym) = 6afa, stp = ffffffe7
+debug: glint(sym) = 66f9, stp = ffffffe6
+debug: glint(sym) = fffffff7, stp = ffffffe4
+debug: glint(sym) = 74f8, stp = ffffffe5
+
+what is argstk in newfunc() in function.c doing during that?
+(not much... just snapshots and restores)
+
+        argstk = 0;
+                                addloc (n, 0, 0, argstk, AUTO);
+                                argstk = argstk + intsize();
+        stkp = 0;
+        argtop = argstk;
+
+
+XXX maybe the stack counter should grow upward and maybe the stack too
+
+                                fprintf(stderr, "debug: declloc: added %s, new argstk=%lx\n", sname, argstk);
+
+sym.c declloc() does:
+
+                                addloc (sname, j, typ, stkp, AUTO);  // j is ARRAY, POINTER, VARIABLE, k is storage size
+                                fprintf(stderr, "debug: declloc: added %s, new argstk=%lx\n", sname, argstk);
+
+debug: declloc: added A, new stk=fffffffa
+debug: declloc: added j, new stk=fffffff9
+debug: declloc: added flag, new stk=fffffff8
+debug: declloc: added temp, new stk=fffffff7
+debug: glint(sym) = 6afa, stp = fffffff7
+debug: glint(sym) = 6afa, stp = fffffff6
+debug: glint(sym) = 6afa, stp = fffffff5
+debug: glint(sym) = 6afa, stp = fffffff4
+debug: glint(sym) = 6afa, stp = fffffff3
+debug: glint(sym) = 6afa, stp = fffffff2
+debug: glint(sym) = 74f8, stp = fffffff1
+debug: glint(sym) = 74f8, stp = fffffff1
+debug: glint(sym) = 74f8, stp = fffffff0
+debug: glint(sym) = 66f9, stp = fffffff0
+debug: glint(sym) = 66f9, stp = fffffff0
+debug: glint(sym) = 66f9, stp = ffffffef
+debug: glint(sym) = 6afa, stp = ffffffef
+debug: glint(sym) = 66f9, stp = ffffffee
+debug: glint(sym) = 6afa, stp = ffffffed
+debug: glint(sym) = 66f9, stp = ffffffec
+debug: glint(sym) = fffffff7, stp = ffffffeb
+debug: glint(sym) = 6afa, stp = ffffffea
+debug: glint(sym) = 66f9, stp = ffffffe9
+debug: glint(sym) = 6afa, stp = ffffffea
+debug: glint(sym) = 66f9, stp = ffffffe9
+debug: glint(sym) = 6afa, stp = ffffffe8
+debug: glint(sym) = 66f9, stp = ffffffe7
+debug: glint(sym) = 6afa, stp = ffffffe7
+debug: glint(sym) = 66f9, stp = ffffffe6
+debug: glint(sym) = fffffff7, stp = ffffffe4
+debug: glint(sym) = 74f8, stp = ffffffe5
+
+declloc:
+
+                        if (stclass != LSTATIC) {
+                                k = galign(k);
+                                stkp = modstk (stkp - k);
+                                                        v--- glint() attempts to retrieve this
+                                addloc (sname, j, typ, stkp, AUTO);  // j is ARRAY, POINTER, VARIABLE, k is storage size
+                                fprintf(stderr, "debug: declloc: added %s, new stk=%lx\n", sname, stkp);
+                        } else {
+
+glint(sym) = 6afa   <--- I hate this.  looks like declloc()/addloc() stores this from stkp and it just gets mangled.
+
+{
+
+from the 8080 code, this just subtracts the current stack pointer from the observed stack pointer when the symbol was created, then adds that to the stack pointer I believe with the result going in to HL, the primary reg
+        immed ();
+        outdec (glint(sym) - stkp);
+        nl ();
+        ol ("dad\tsp");
+
+
+debug: newfunc
+debug: declloc: added A, new stk=6
+debug: declloc: added j, new stk=7
+debug: declloc: added flag, new stk=8
+debug: declloc: added temp, new stk=9
+debug: getloc on A: glint(sym) = 6a06, stp = 9
+debug: getloc on A: glint(sym) = 6a06, stp = a
+debug: getloc on A: glint(sym) = 6a06, stp = b
+debug: getloc on A: glint(sym) = 6a06, stp = c
+debug: getloc on A: glint(sym) = 6a06, stp = d
+debug: getloc on A: glint(sym) = 6a06, stp = e
+debug: getloc on flag: glint(sym) = 7408, stp = f
+debug: getloc on flag: glint(sym) = 7408, stp = f
+
+        fprintf(stderr, "debug: addloc: adding %sname, offset=%lx, low=%hhu, high=%hhu\n", sname, value, cptr[OFFSET], cptr[OFFSET+1]);
+
+not right:
+
+debug: addloc: adding name, offset=6, low=6, high=0
+debug: declloc: added A, new stk=6
+debug: addloc: adding name, offset=7, low=7, high=0
+debug: declloc: added j, new stk=7
+debug: addloc: adding name, offset=8, low=8, high=0
+debug: declloc: added flag, new stk=8
+debug: addloc: adding name, offset=9, low=9, high=0
+debug: declloc: added temp, new stk=9
+debug: glint: fetching A, low=6, high=106                          <--- should be high=0, low=6
+debug: getloc on A: glint(sym) = 6a06, stp = 9
+debug: glint: fetching A, low=6, high=106
+debug: glint: fetching A, low=6, high=106
+
+
+much much better:
+
+        // getloc
+        // need to debug this one
+        @-3
+        D=A
+
+debug: addloc: adding name, offset=6, low=6, high=0           6 bytes were allocated for A[], but on the wrong side of what was recorded here.
+
+
+debug: newfunc
+debug: declloc: adding A, stk=0
+debug: addloc: adding name, offset=0, low=0, high=0
+debug: declloc: adding j, stk=6
+debug: addloc: adding name, offset=6, low=6, high=0
+debug: declloc: adding flag, stk=7
+debug: addloc: adding name, offset=7, low=7, high=0
+debug: declloc: adding temp, stk=8
+debug: addloc: adding name, offset=8, low=8, high=0
+debug: glint: fetching A, low=0, high=0                   -- good
+debug: getloc on A: glint(sym) = 0, stp = 9
+debug: glint: fetching A, low=0, high=0
+debug: glint: fetching A, low=0, high=0
+debug: getloc on A: glint(sym) = 0, stp = a
+debug: glint: fetching A, low=0, high=0
+debug: glint: fetching A, low=0, high=0
+debug: getloc on A: glint(sym) = 0, stp = b
+...
+debug: getloc on j: glint(sym) = 6, stp = 1a
+debug: glint: fetching j, low=6, high=0                   -- good
+debug: glint: fetching temp, low=8, high=0
+debug: getloc on temp: glint(sym) = 8, stp = 1c
+debug: glint: fetching temp, low=8, high=0                -- good
+debug: glint: fetching flag, low=7, high=0
+debug: getloc on flag: glint(sym) = 7, stp = 1b
+debug: glint: fetching flag, low=7, high=0                -- good
+
+XXX ok, now we need to move addressing relative the top of the stack vs the bottom of it, if we aren't already.
+
+XXX post/pre-inc/dec probably needs to match what the compiler is doing, which I just changed to post-inc.
+
+
+debug: declloc: adding A, stk=0
+debug: addloc: adding A, offset=0, low=0, high=0
+debug: declloc: added A, new stk=6
+
+        // need to debug this one
+debug: getloc (code generator in code_nisan) on A: glint(sym) = 0, stp = 9
+        v-------- yup, this is backwards.  
+        @49
+
+                       v-- need this
+                onum(STACKTOP + stkp - glint(sym))
+
+
+glint(sym) - stkp =
+0 - 49 or whatever
+
+glint(sym) - stkp =
+7 - 49 or whatever
+
+this is also wrong:
+
+// debug: getloc (code generator in code_nisan) on A: glint(sym) = 0, stp = 9
+        @31
+
+if added stp in to there, it would be correct.  how did stkp get to be 9 at that point?
+ok, there's a string of four modstk instructions immediately before that and nothing else:
+
+        // modstk
+        @6
+        D=A
+        @stackp
+        M=M-D
+        // modstk
+        @1
+        D=A
+        @stackp
+        M=M-D
+        // modstk
+        @1
+        D=A
+        @stackp
+        M=M-D
+        // modstk
+        @1
+        D=A
+        @stackp
+        M=M-D
+
+I guess that's where things are allocated
+oh, and the +/- are backwards.
+
+debug: getloc (code generator in code_nisan) on A: glint(sym) = 0, stkp = 9
+
+
+debug: getloc (code generator in code_nisan) on flag: glint(sym) = 7, stkp = 1b
+1. 7 - 0x1b = -20                               ... glint(sym) - stkp
+2. STACKBOT + stkp + -20 = 47... perfect
+   perl -e 'print 40+0x1b-20;'
+
+STACKBOT + stkp + (glint(sym) - stkp)... *might* work.
+
+to work, is the stack pointer left pointing at an empty slot to push to, or at the last item pushed?
+right now, it is left pointing at the last thing pushed.
+wondering if this interacts with getloc() somehow.  maybe not.  may just have to not overwrite stuff, which we should be set up for either way.
+(I put OFFSET at 15 of 15 slots and OFFSET+1 is used, so the next entry clobbered the high part of the address.)
+
+.....
+
+        // immed
+        @0
+        // asl
+        A=D
+        D=D+A
+
+why is it doing an asl on 0?  is it trying to scale to a pointer?  yes.
+
+        // gpush
+        @stackp
+        M=M+1
+        A=M
+        M=D
+        // immed
+        @0
+        // asl
+        A=D
+        D=D+A
+        // gadd
+        @secondary
+        D=D+M
+
+oh gosh this is probably part of     A[0]=5; .
+and it is probably trying to scale the index.
+v/ it needs to stop that.
+v/ would be nice to have source code line comments.
+
+stmt.c has a big if/else thing that looks for each type of statement.
+that calls ns() after each thing.
+lex.c has ns().
+currently all that does is look for an ; or else error.
+
+gaslint ()
+{
+        ol("// asl");
+
+        // ol ("asl.l\t&2,%d0");
+        // kludge... add the number to itself to double it
+        ol("A=D");
+        ol("D=D+A");
+
+
+expr.c
+75:                                            gaslint();
+82:                                            gaslint();
+91:                            case '<':       gasl (); break;
+376:                   gasl ();
+402:                           gaslint ();
+415:                           gaslint ();
+594:                                   gaslint ();
+
+seems to do this each time:
+                                        if (dbltest(lval,lval2))
+                                                gaslint();
+
+
+
+.............
+
+secondary very likely is on the stack.
+(yup, use the stack.  secondary was just an implementation detail optimizing at the backend level.)
+
+        @20
+        D=A
+        // gpush
+        @stackp
+        M=M+1
+        A=M
+        M=D
+        // immed
+        @0
+        // gadd
+        @secondary              <--- should *not* be using this
+        D=D+M
+        // gpush
+        @stackp
+        M=M+1
+        A=M
+        M=D
+        // immed
+        @5
+        // putstk
+        @stackp
+        A=M
+        A=M
+        M=D
+        @stackp
+        M=M-1
+        // ^--  A[0]=5;
+
+expr.c heir8():
+
+                if (match ("+")) {
+                        gpush ();                                                        <--- there are no calls to gpop() in expr.c so don't think this is just save/restore
+                        if (heir9 (lval2))                                               <--- not sure what's going on here but suspect the immediate
+                                rvalue (lval2);
+                        /* if left is pointer and right is int, scale right */
+                        if (dbltest (lval, lval2))
+                                gaslint ();
+                        /* will scale left if right int pointer and left int */
+                        gadd (lval,lval2);
+                        result (lval, lval2);
+
+gen.c:
+
+rvalue (lval)
+long int        *lval;
+{
+        if ((lval[0] != 0) & (lval[1] == 0))
+                getmem (lval[0]);
+        else
+                indirect (lval[1]);
+}
+
+immediates generated many places:
+
+expr.c
+530:           immed ();
+616:           immed ();
+
+primary.c
+25:            immed();
+75:                            immed ();
+95:            immed ();
+141:           immed ();
+143:           immed ();
+145:           immed ();
+
+stmt.c
+307:   immed ();
+
+primary.c constant() looks like a likely place
+
+more examples of push-then-add
+trying to figure out if a gpush is always immediately used, so that a stack is unncessary
+not that saving to secondary is super easy either.
+(evaluation stack is necessary)
+
+......
+
+see it doing getloc then gpush and probably have to do post-inc not pre-inc if it is trying to save a variable.
+no, getloc doesn't change the stack pointer.  it just computes an address.
+
+somewhere in this:
+
+    while( flag  == 1 )
+     {
+        flag = 0;         
+
+        // ^--  flag = 1;
+        // getloc
+        // debug: getloc (code generator in code_nisan) on flag: glint(sym) = 7, stkp = f, computed memory address=27
+        @27
+        D=A                                                           ... load the value of 'flag'
+        // indirect
+        A=D
+        A=M
+        D=M
+        // gpush
+        @stackp                                                       ... and push the value on the stack
+        M=M+1
+        A=M
+        M=D
+        // immed                                                      ... compare that to 1
+        @1
+        // geq
+        @secondary             <--- should not be using @secondary without having loaded it... obviously this wants the 1 in D and the value from flag
+        D=D-M
+        D=!D
+        // testjump
+        @LL3
+        D;JNE                                                         ... jump if values were equal  think this might be wrong.  (it was wrong.)
+        // getloc
+        // debug: getloc (code generator in code_nisan) on flag: glint(sym) = 7, stkp = 10, computed memory address=27
+        @27
+        D=A                                                           ... get the address of 'flag' (not value)
+        // gpush
+        @stackp                                                       ... and save that on the stack (!?)
+        M=M+1
+        A=M
+        M=D
+        // immed
+        @0
+        // putstk
+        @stackp                                                       ... then save 0 to that address 
+        A=M
+        A=M
+        M=D
+        @stackp
+        M=M-1
+        // ^--  flag = 0;
+
+gpush, immed, putstk seems to be a common idiom
+getloc, gpush, indirect, ginc, putstk
+
+complicated expressions could def have intermediate values on a stack.  I think "secondary" is just wrong.
+ *      pop the top of the stack into the secondary register
+what the fuck do you do about that then?
+
+
+8080 version:
+/*
+ *      add the primary and secondary registers
+ *      if lval2 is int pointer and lval is not, scale lval
+ */
+gadd (lval,lval2) int *lval,*lval2;
+{
+        gpop ();
+        if (dbltest (lval2, lval)) {
+                swap ();
+                gaslint ();
+                swap ();
+        }
+        ol ("dad\td");
+}
+/*
+ *      pop the top of the stack into the secondary register
+ *
+ */
+gpop ()
+{
+        ol ("pop\td");
+        stkp = stkp + INTSIZE;
+}
+
+that reads the top of the stack into the secondary register then adds them leaving it I assume in the primary.
+
+...
+
+immediate needs the D=A after it
+
+                /* global and non-array */
+                immed ();
+                prefix ();
+                outstr (ptr = lval[0]);
+                nl ();
+
+ok, now I see why the m68k code was abusing nl() to add more stuff.
+
+..............
+
+this kind of screwed up and read location 1 in to A (flag at 27=1)
+
+        // getloc
+	// debug: getloc (code generator in code_nisan) on flag: glint(sym) = 7, stkp = f, computed memory address=27
+        @27
+        D=A
+        // indirect
+        A=D  ... A=27
+        A=M  ... A=1     ... ok, this is extra
+        D=M  ... D=1     ... should skip to this
+
+....
+
+CPU Emulator 172   @27
+test.s 247, after     A[5]=0;   executes
+putting a 1 in to location 27, and we move on to the while loop
+
+ok.
+
+test.s 267  after   flag = 1; executes
+fetch the value of 'flag', put it on the stack, load an immed '1', geq the two, then testjump
+D=D-M, D=!D, then D=0.  good.
+ROM 203 is the D;JNE for the flag == 1 test in      while( flag  == 1 ).  it jumps to LL3 which is way at the end of the program.
+oh god but somehow D became -1. oh yeah that's right, we did that.  so that test is backwards.
+the only thing that happens at LL3 is two modstk instructions that deallocate 1+15 words.
+
+    while( flag  == 1 )
+     {
+        flag = 0;                   /* set flag to false awaiting a possible swap */                   <--
+
+test.s 294 sets flag at 27 to 0.  ok.
+
+test.s 315, CPU Em 217:
+then we are here:
+
+        for( j=0;  j < 6;  j++ )
+fetches j's address, pushes it, immed 0, putstk... so loc 26=0
+
+EM 231, test.s 337:
+fetches j's address, then its value, pushes that, loads an immed 6, and goes glt
+first pass, j is 0
+getting ready to do a D=D-M with D=6-0 = 6  at CPUE 243.  ok.
+JLT did not branch.  D=0;JMP ran skipping over D=1.
+
+test.s 263, CPUE 252:
+        // testjump
+        @LL6
+        D;JEQ
+LL6 is right after LL5.  LL5 seems to do j++.
+if it didn't branch to LL6, it would have to LL7, which is at the end, with just three modstks before the end.
+so LL6 seems good.
+
+test.s 402, CPUE 273:
+apparently working on this:
+             if (A[ j ] > A[j+1] )   /*  test for ascending sort */
+fetches A's address, pushes, fetches j, adds (ok, subscript), indirect fetch, pushes the result, fetches A's address again, pushes, fetches j's value, pushes, loads immed #1, add, add (ok, def stacking), indirect, ggt 
+since values are reversed, greater-than is true.
+this stuff should run after the comparison:
+                 temp = A[ j ];      /* swap elements */
+                 A[ j ] = A[ j+1 ];
+                 A[ j+1 ] = temp;
+                 flag = 1;               /* shows a swap occurred */
+ok, fetched from loc 20, A[0].  CPUE288, test.s 423, then it's getting ready to indirect load that.  good, got 5.
+ok, j+1 = 1 at CPUE 312 test.s 460
+CPU 317, test.s 466 computed 21 and is loading indirect from that location
+and it got 4 at test.s 471 CPUE 321.  good.
+
+test.s 471 CPUE 321 is where it goes the ggt/GT.
+loaded '4' from the stack again.  M points at loc 30 which contains '5'.  result is -1.
+will not do the D;JGT at CPUE 326 test.s 477.
+so D gets loaded with 0.
+L112 is the end of the ggt.  then there's a testjump.
+
+test.s 487 CPUE 333 is a D;JNE.  D contains 0.  it will not jump to LL10.  LL10 just jumps back to LL5 which seems to do j++.  good.  don't want to jump to LL10.  that would be skipping the swap step.
+
+test.s 491 CPUE 334:
+next is:
+        // ^--  temp = A[ j ];
+fetches temp's address and pushes, fetches A's address and pushes, fetches j's value, adds, loads the value from that address, puts it on the stack (in temp's address I guess)
+
+test.s 351, CPUE 362:  temp at loc 28 should contain '5'.  good.
+
+test.s 610 CPUE 415 finishes this statement:
+        // ^--  A[ j ] = A[ j+1 ];
+then loc 20 should contain '4'.  good.
+
+test.s 668 CPU 455 finishes this statement:
+        // ^--  A[ j+1 ] = temp;
+then slot 21 should contain '5'.  good.
+
+test.s 673 CPUE 456 -
+test.s 689 CPUE 473:
+                 flag = 1;               /* shows a swap occurred */
+flag has loc 27 and loc 27 should be = 1.  good.
+
+                                             <--------------- A[0] clobbered some time after here.
+test.s 692, CPUE 470 are a modstk apparently to get ready to leave the stack frame and throw away local vars         <-------- stack probably clobbered here
+stack at loc 16 = 29 at the moment.  it should not go below 28.
+        // modstk
+        @10 
+        D=A  
+        @stack
+        M=M-D
+test.s 698, CPUE 475 is a JMP to LL5.
+
+LL5 is test.s 370, CPUE 255
+fetches j's address, pushes, fetches value, increments, stores, then for some reason decs but it is already stored, then jumps to LL4
+test.s 397, CPUE 272 is the JMP to LL4
+j has loc 26 and should be 1 after inc.  good.
+
+LL4 is CPUE 231, test.s 333:
+fetches j's value, pushes it, loads immed 6, does a glt, then a testjump.
+after D=D-M, D=5.  glt sets D=0.  JEQ will run so we branch to LL6.
+
+something clobbered the 45321 sequence starting at 20, dropping a 1 in there.  I didn't see it happen but it was likely this last little bit.
+likely a stack error.  j got incremented to 1.  the stack pointer is currently 19 which is 1 below the start at 20, and globals took it up
+maybe bad stack handling was to blame, but < and > being broken was probably the larger issue
+to 28:
+debug: declloc: adding A, stk=0
+debug: declloc: adding j, stk=6
+debug: declloc: adding flag, stk=7
+debug: declloc: adding temp, stk=8
+should not have been moved below 28.
+
+...
+
+function.c
+101:   modstk (0);
+
+primary.c
+291:   stkp = modstk (stkp + nargs);
+
+callfunction (ptr)
+        stkp = modstk (stkp + nargs);
+
+
+stmt.c
+doif ()
+        fstkp = stkp;
+debug: doif: fstkp = 17
+        flab1 = getlabel ();
+        test (flab1, FALSE);
+        statement (NO);
+        stkp = modstk (fstkp);  <--- this one causes the crash.
+
+189:   stkp = modstk (fstkp);
+213:   stkp = modstk (ws[WSSP]);
+242:   stkp = modstk (ws[WSSP]);
+288:   stkp = modstk (pws[WSSP]);
+322:   stkp = modstk (ptr[WSSP]);
+383:   modstk (ptr[WSSP]);
+397:   modstk (ptr[WSSP]);
+
+
+
+sym.c
+91:                            /* stkp = modstk(stkp - k);  XXX stack growing up for nisan... arbitrary but testing avoiding negative numbers since that's currently getting mangled going from 64 to 16 bit */
+92:                            /* stkp = modstk(stkp + k);  XXX end of the array vs the start is recorded when the stack grows upwards */
+95:                            stkp = modstk(stkp + k); // XXXXXX testing allocating storage after
+
+
+
+553     *(int *)0=0;
+Current language:  auto; currently minimal
+(gdb) bt
+#0  modstk (newstkp=17) at code_nisan.c:553
+#1  0x00000e0278ff56e5 in doif () at stmt.c:180
+#2  0x00000e0278ff5386 in stst () at stmt.c:86
+#3  0x00000e0278ff5134 in compound (func=0) at stmt.c:161
+#4  0x00000e0278ff5036 in statement (func=0) at stmt.c:40
+#5  0x00000e0278ff5ba1 in dofor () at stmt.c:284
+#6  0x00000e0278ff5459 in stst () at stmt.c:99
+#7  0x00000e0278ff5134 in compound (func=0) at stmt.c:161
+#8  0x00000e0278ff5036 in statement (func=0) at stmt.c:40
+#9  0x00000e0278ff5831 in dowhile () at stmt.c:209
+#10 0x00000e0278ff53b9 in stst () at stmt.c:89
+#11 0x00000e0278ff5134 in compound (func=1) at stmt.c:161
+#12 0x00000e0278ff4ff6 in statement (func=1) at stmt.c:35
+#13 0x00000e0278ff04d2 in newfunc () at function.c:97
+#14 0x00000e0278ff283a in parse () at main.c:162
+#15 0x00000e0278ff2444 in main (argc=1, argv=0x7f7ffffbdbf8) at main.c:97
+
+
+oof.  ok, it looks like it is just getting out of sync.
+this might be perfectly reasonable:
+modstk (backend): old stack pointer 27, new stack pointer 17
+but our stack pointer is only 9 aka 29 at that point.  can't really subtract 10.
+really not ok tho.. the if() has no local vars.  it's using main() scoped ones.
+this shouldn't happen.  or should be 0.
+
+something is making the internal concept of the stackpointer just climb:
+
+debug: getloc (code generator in code_nisan) on A: glint(sym) = 0, stkp = 11, computed memory address=20
+debug: getloc (code generator in code_nisan) on j: glint(sym) = 6, stkp = 12, computed memory address=26
+debug: getloc (code generator in code_nisan) on A: glint(sym) = 0, stkp = 13, computed memory address=20
+debug: getloc (code generator in code_nisan) on j: glint(sym) = 6, stkp = 14, computed memory address=26
+debug: getloc (code generator in code_nisan) on temp: glint(sym) = 8, stkp = 15, computed memory address=28
+debug: getloc (code generator in code_nisan) on A: glint(sym) = 0, stkp = 16, computed memory address=20
+debug: getloc (code generator in code_nisan) on j: glint(sym) = 6, stkp = 17, computed memory address=26
+debug: getloc (code generator in code_nisan) on A: glint(sym) = 0, stkp = 16, computed memory address=20
+debug: getloc (code generator in code_nisan) on j: glint(sym) = 6, stkp = 17, computed memory address=26
+debug: getloc (code generator in code_nisan) on A: glint(sym) = 0, stkp = 18, computed memory address=20
+debug: getloc (code generator in code_nisan) on j: glint(sym) = 6, stkp = 19, computed memory address=26
+debug: getloc (code generator in code_nisan) on A: glint(sym) = 0, stkp = 19, computed memory address=20
+debug: getloc (code generator in code_nisan) on j: glint(sym) = 6, stkp = 1a, computed memory address=26
+debug: getloc (code generator in code_nisan) on temp: glint(sym) = 8, stkp = 1c, computed memory address=28
+debug: getloc (code generator in code_nisan) on flag: glint(sym) = 7, stkp = 1b, computed memory address=27
+probably code_nisan.c.  yup.  wasn't updating stkp except a few places.
+
+20=0
+21=1
+22=2
+23=3
+24=4
+25=5
+
+20=3
+21=1
+22=4
+23=5
+24=6  what
+25=5  what
+
+guessing we have some branching boundary cases
+
+XXX really should have a separate computation intermediate stack (fairly small) and a scope storage stack (much larger)
+
+...
+
+in clang:
+i=2, j=2
+
+i=20
+j=21... yup, j made it to 3.  bzz.  so did i.
+
+    for( i=0;  i < 2;  i++ )
+    {   
+        j++;
+    }
+
+*less than* 2.
+after         D=D-M,  D=0.
+so want JLE instead of JLT.
+
+                                                        v--- got it.  so, args to D=D-M must be swapped.  both < and > tests are reversed.
+    i = 1 == 1;  /* 1 */   loc 20   ... 2        1      1
+    j = 1 < 2;   /* 1 */   loc 21   ... 2        1      1
+    k = 2 < 2;   /* 0 */   loc 22   ... 0        0      0
+    l = 3 < 2;   /* 0 */   loc 23   ... 2 XXX    0      0
+    m = 1 == 0;  /* 0 */   loc 24   ... 0        0      0
+    n = 3 > 2;   /* 1 */   loc 25   ... 0 XXX    1      1
+    o = 3 > 3;   /* 0 */   loc 26   ... 0        1 XXX  0
+    p = 2 > 3;   /* 0 */   loc 27   ... 0        0      0
+
+
