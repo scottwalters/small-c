@@ -64,8 +64,10 @@ much broken on 64 bit architectures.  I sparked some 'long's around
 like pixie dust until it started working.  So to be eslf-hosting
 again, it could ignore "long" before variables.
 
-
-
+Look for "XXX" in the code for un-done stuff and left over cruft.
+Look for "TODO" in the generated assembly code where implementations
+of operations is known to be not done.  Signed comparison isn't yet
+implemented.
 
 ---------------8<---------------------------------------------------------
 

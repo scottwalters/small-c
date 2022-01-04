@@ -45,7 +45,7 @@ header ()
 	ol("M=D");
 
 	// initialize a backup space for the primary "data" register
-	// XXX may or may not still need this
+	// this isn't used but I kind of like having the stack pointer at loc 16.
 	ol("@primary");  // assembler allocates primary
 	ol("M=0");
 
@@ -177,7 +177,7 @@ gtext ()
 
 /*
  *	data segment
- *      not supported by Nisan.  separate RAM/ROM and instructions cannot access constants in ROM.  XXX if things need data segments, they will break.
+ *      not supported by Nisan.  separate RAM/ROM and instructions cannot access constants in ROM.  XXX if things need data segments, they will break.  looks like only the switch() implementation uses this.
  */
 gdata ()
 {
@@ -188,12 +188,13 @@ gdata ()
 /*
  *  Output the variable symbol at scptr as an extrn or a public
  *  XXX this probably won't work either
- * it tries to do a few of these automatically and then does one for 'main()' and I assume any other funcs defined/
+ * it tries to do a few of these automatically and then does one for 'main()' and I assume any other funcs defined
  */
 void
 ppubext(scptr) char *scptr; {
+        ol("// ppubext TODO ");
 	if(scptr[STORAGE] == STATIC) return;
-        // error("extrn public probably needs work");
+        error("extrn public probably needs work");
 	// ot("global\t");
 	// prefix();
 	// outstr(scptr);
@@ -222,7 +223,7 @@ onum(num) int num; {
 getmem (sym)
 char	*sym;
 {
-        ol("// getmem");
+        ol("// getmem TODO half implemented and untested");
 	if ((sym[IDENT] != POINTER) & (sym[TYPE] == CCHAR)) {
                 // char case
                 error("chars not supported");
@@ -248,10 +249,9 @@ getloc(sym)
 char	*sym;
 {
         ol("// getloc");
-        ol("// XXXXXXXXXX need to debug this one");
 	if (sym[STORAGE] == LSTATIC) {
-        	ol("// XXXXXXXXXXXXXXXX unimplemented TODO ");
-		error("XXX getloc with LSTATIC probably needs work");
+        	ol("// XXX unimplemented TODO ");
+		error("XXX getloc with LSTATIC probably needs work");  // at the very least, emit the derpy @<const> \n D=A \n junk
 		immed();
 		printlabel(glint(sym));
 		nl();
@@ -261,13 +261,12 @@ char	*sym;
 		sprintf(tmp, "debug: getloc (code generator in code_nisan) on %s: glint(sym) = %lx, stkp = %lx, computed memory address=%u\n", sym, glint(sym), stkp, address);
                 fprintf(stderr, tmp);
                 outstr("// "); outstr(tmp);
-// XXXXX get this correct
+                // stkp is the current stack pointer which includes anything on the evaluation stack.
+		// glint() fetches the stkp recorded when the symbol was created with declloc()/addloc().
 		// glint(sym) is observed stpk when the symbol was created.
 		// stkkp - glint(sym) is the offset from the current top of the stack to where sym was placed
-// XXXX so we need to add our stack offset (eg 40) to this
-		// ot("@"); onum(STACKBOT + glint(sym) - stkp); nl();   // XXX not sure what's going on here but apparently stkp is the stack pointer.  ok, glint() fetches the stkp recorded when the symbol was created with declloc()/addloc().
-
-		// ot("@"); onum(STACKBOT + glint(sym) - stkp); nl();
+		// making the evaluation stack separate would simplify this process of finding variables in stack frames.
+		// I'm also skeptical that this will work for subroutine calls.
 		ot("@"); onum( STACKBOT + stkp + (glint(sym) - stkp) ); nl();  // top of the stack relative addressing
 		ol("D=A");                  // D=A just uses the address register, not the memory contents, and this operation wants the memory address of the stack position, not the contents
 	}
@@ -317,7 +316,7 @@ char	typeobj;
         ol("M=D");    // store data
         // post-dec the stack pointer to pop the address we just used
         ol("@stack");
-        ol("M=M-1");  // dec the stack pointer to remove from the stack, assuming it grows upwards.  XXX post-decs and pre-incs.  so the first slot doesn't get used as currently set (testing stuff here).
+        ol("M=M-1");  // dec the stack pointer to remove from the stack, assuming it grows upwards.  post-decs and pre-incs.  so the first slot doesn't get used as currently set (testing stuff here).
 	stkp = stkp - INTSIZE;
 }
 
@@ -347,7 +346,7 @@ char	typeobj;
 swap ()
 {
         ol("// swap TODO UNIMPL");
-	// XXX don't have a secondary reg really
+	// don't have a secondary reg really
 	// ok, it looks like primary/expr/etc never call this but they do call swapstk() in exactly one place, so secondary seems like an implmenentation detail
 	// ol ("mov.l\t%d0,%d2\n\tmov.l\t%d1,%d0\n\tmov.l\t%d2,%d1");
 }
@@ -549,9 +548,9 @@ int	newstkp;
 	ol("D=A");
 	ol("@stack");
 	if( k > 0 ) {
-		ol("M=M+D"); // extend stack higher in memory  XXX not sure if I have this straight now
+		ol("M=M+D"); // extend stack higher in memory.  not sure if I have this straight now.
 	} else {
-		// *(int *)0=0; // stop in gdb XXX
+		// *(int *)0=0; // stop in gdb 
 		ol("M=M-D"); // remove items from stack
 	}
  */
@@ -825,7 +824,7 @@ geq ()
         ol("// geq");
 	ol("@stack");
 	ol("A=M");   // indirect operation... use the stack pointer as an address to read/write.
-	ol("D=D-M"); // leave as 0 if they are the same.  testjump() will do a JNE later.  XXX testing this.
+	ol("D=D-M"); // leave as 0 if they are the same.  testjump() will do a JNE later.
 
 	ol("@stack");
 	ol("M=M-1");   // post-dec stack pointer
@@ -841,8 +840,8 @@ gne ()
         ol("// gne");
 	ol("@stack");
 	ol("A=M");   // indirect operation... use the stack pointer as an address to read/write.
-	ol("D=D-M"); // XXX no idea if the sense of the test is correct
-	ol("D=!D"); // D=D-M leaves D=0 if they are the same so invert the sense of the test so that D=-1 if they are the same and 0 if not same.  seems to be the sense wanted later in testjump(). XXX
+	ol("D=D-M");
+	ol("D=!D"); // D=D-M leaves D=0 if they are the same so invert the sense of the test so that D=-1 if they are the same and 0 if not same.  seems to be the sense wanted later in testjump().
 
 	ol("@stack");
 	ol("M=M-1");   // post-dec stack pointer
@@ -866,9 +865,9 @@ glt ()
 	ot("@LL"); outdec(label1); nl(); // jump target
 	ol("D;JGT");  // jump to label1 if less-than-or-equal.  argumets must be swapped so reversing the test.
 	ot("@LL"); outdec(label2); nl(); // jump target
-	ol("D=1;JMP");   // false; jump to end
+	ol("D=1;JMP");   // true ; jump to end
         outstr("(LL"); outdec(label1); outstr(")"); nl(); // if-less-than target
-	ol("D=0");       // true and fall-through to end
+	ol("D=0");       // false and fall-through to end
         outstr("(LL"); outdec(label2); outstr(")"); nl(); // end target
 
 	ol("@stack");
@@ -897,13 +896,13 @@ ggt ()
 	int label2 = getlabel();  // next sequential label number
 	ol("@stack");
 	ol("A=M");   // indirect operation... use the stack pointer as an address to read/write.
-	ol("D=D-M"); // XXX no idea if the sense of the test is correct but given this is an equality test, doesn't matter in this case
+	ol("D=D-M");
 	ot("@LL"); outdec(label1); nl(); // jump target
-	ol("D;JLT");  // jump to label1 if greater-than (though numbers might be backward)
+	ol("D;JLT");  // jump to label1 if not greater-than
 	ot("@LL"); outdec(label2); nl(); // jump target
-	ol("D=1;JMP");   // false; jump to end
+	ol("D=1;JMP");   // true; jump to end
         outstr("(LL"); outdec(label1); outstr(")"); nl(); // if-greater-than target
-	ol("D=0");       // true and fall-through to end
+	ol("D=0");       // false and fall-through to end
         outstr("(LL"); outdec(label2); outstr(")"); nl(); // end target
 
 	ol("@stack");
